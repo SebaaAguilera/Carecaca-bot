@@ -13,8 +13,14 @@ class Card(object):
     def getValue(self):
         return self.value
 
-    def equalCard(self, card):
+    def equalValue(self, card):
         return self.getValue() == card.getValue()
+
+    def equalSuit(self, card):
+        return self.suit == card.suit
+
+    def equalCard(self, card):
+        return self.equalValue(card) and self.equalSuit(card)
 
     def geq(self, card):
         return self.value >= card.value
@@ -40,7 +46,9 @@ class Card(object):
         elif(self.value == JK):
             return "takeAll"
         else:
-            return "none"
+            return None
+
+    # dispay card
 
 
 def deck():

@@ -22,16 +22,36 @@ class GameController(object):
                 player.setTable(self.deck.pop())
                 player.setHiddenCard(self.deck.pop())
 
+    def changeOrder(self):
+        self.order = not self.order
+
+    def returnOrder(self):
+        if(self.order):
+            return +1
+        else:
+            return -1
+
     # Cards in the stack
-    def setCardOnTop(self, card):
+
+    def setCardOnTop(self, player, card):
+        self.drawCards(player)
         self.cardStack.append(card)
         self.cardOnTop = card
 
     def getCardOnTop(self):
         return self.cardOnTop
 
+    def getAllFromStack(self, player):
+        player.setManyCardsToHand(self.cardStack)
+        self.cardStack = []
+        self.cardOnTop = None
+
     def burn(self):
         self.cardStack = []
+
+    def drawCards(self, player):
+        while (len(self.deck) > 0 and player.getHandLen() < 3):
+            player.setHand(self.deck.pop())
 
     def getTurnOwner(self):
         return self.turnOwner
@@ -46,7 +66,7 @@ class GameController(object):
         return self.players.index(player)
 
     def addCounter(self, player, card):
-        if (card.equalCard(self.getCardOnTop())):
+        if (card.equalValue(self.getCardOnTop())):
             self.counter += 1
             if (self.counter == 4):
                 self.burn()
@@ -55,59 +75,62 @@ class GameController(object):
         else:
             self.counter = 0
 
-    def putCardOnStack(self, player, card):
-        if (isinstance(card, Card)):
-            if(card.isValidWith(self.getCardOnTop())):
-                if(self.flash):
-                    if (card in player.getHand()):
-                        self.turnOwner = player
-                        self.setCardOnTop(player.popCardFromHand(card))
-                    elif (card in player.getTable() and player.getHandLen() == 0):
-                        self.turnOwner = player
-                        self.setCardOnTop(player.popCardFromTable())
-                elif (player.equalId(self.turnOwner)):
-                    if (card in player.getHand()):
-                        self.setCardOnTop(player.popCardFromHand(card))
-                    elif (card in player.getTable() and player.getHandLen() == 0):
-                        self.setCardOnTop(player.popCardFromTable())
+    def pCOS_True(self, player, card):
+        if(card.isValidWith(self.getCardOnTop())):
+            if(self.flash and card.equalValue(self.cardOnTop)):
+                if (card in player.getHand()):
+                    self.turnOwner = player
+                    self.setCardOnTop(player, player.popCardFromHand(card))
+                elif (card in player.getTable() and player.getHandLen() == 0):
+                    self.turnOwner = player
+                    self.setCardOnTop(player, player.popCardFromTable())
+            elif (player.equalId(self.turnOwner) and not self.flash):
+                if (card in player.getHand()):
+                    self.setCardOnTop(player, player.popCardFromHand(card))
+                elif (card in player.getTable() and player.getHandLen() == 0):
+                    self.setCardOnTop(player, player.popCardFromTable())
+            # not valid player
+            else:
+                self.getAllFromStack(player)
+            if (not self.addCounter(player, card)):
+                self.endTurnEffects(player)
+        else:
+            # wrong card, take all the stack
+            self.getAllFromStack(player)
+            self.endTurn(player)
+
+    def pCOS_False(self, player, card):  # revisar que solo puede jugar en su turno
+        if (card == 0):
+            # have no cards
+            self.getAllFromStack(player)
+            self.endTurn(player)
+        elif (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getTableLen == 0):
+            if (player.getHiddenCards()[card % 10 - 1].isValidWith(self.getCardOnTop())):
+                self.setCardOnTop(
+                    player, player.popCardFromHidden(card % 10 - 1))
                 if (not self.addCounter(player, card)):
                     self.endTurnEffects(player)
             else:
-                # wrong card, take all the stack
-                player.setManyCardsToHand(self.cardStack)
-                self.cardStack = []
-                self.endTurnEffects(player)
+                # wrong card, take all
+                player.setHand(player.popCardFromHidden(card % 10 - 1))
+                self.getAllFromStack(player)
+                self.endTurn(player)
+
+    def putCardOnStack(self, player, card):
+        if (isinstance(card, Card)):  # atenzao con esto
+            self.pCOS_True(player, card)
         else:
-            if (card == 0):
-                # have no cards
-                player.setManyCardsToHand(self.cardStack)
-                self.cardStack = []
-                self.endTurnEffects(player)
-            elif (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getTableLen == 0):
-                if (player.getHiddenCards()[card-1].isValidWith(self.getCardOnTop())):
-                    self.setCardOnTop(player.popCardFromHidden(card-1))
-                    if (not self.addCounter(player, card)):
-                        self.endTurnEffects(player)
-                else:
-                    # wrong card, take all
-                    player.setHand(player.popCardFromHidden(card-1))
-                    player.setManyCardsToHand(self.cardStack)
-                    self.cardStack = []
-                    self.endTurnEffects(player)
+            self.pCOS_False(player, card)
+
+    def returnPlayer_Order(self, player, skip=0):
+        return self.players[(self.indexP(
+            player)+self.returnOrder()*(1+skip)) % self.getPlen()]
 
     def endTurn(self, player, skip=0):
-        if (self.order):
-            self.turnOwner = self.players[(self.indexP(
-                player)+1+skip) % self.getPlen()]
-            while(self.turnOwner.hasNoCards()):
-                self.turnOwner = self.players[(
-                    self.indexP(player)+1) % self.getPlen()]
-        else:
-            self.turnOwner = self.players[(
-                self.indexP(player)-1-skip) % self.getPlen()]
-            while(self.turnOwner.hasNoCards()):
-                self.turnOwner = self.players[(
-                    self.indexP(player)-1) % self.getPlen()]
+        auxPlayer = self.returnPlayer_Order(player, skip)
+        while(auxPlayer.hasNoCards()):
+            auxPlayer = self.returnPlayer_Order(auxPlayer)
+        self.turnOwner = auxPlayer
 
     def endTurnEffects(self, player):
         effect = self.getCardOnTop().returnEffect()
@@ -116,25 +139,20 @@ class GameController(object):
         elif (effect == "burn"):
             self.burn()
         elif (effect == "changeOrder"):
-            self.order = not self.order
+            self.changeOrder()
             self.endTurn(player)
         elif (effect == "takeAll"):
             self.cardStack.pop()
-            if(self.order):
-                auxPlayer = self.players[self.indexP(
-                    player)+1 % self.getPlen()]
-                while(auxPlayer.hasNoCards):
-                    auxPlayer = self.players[self.indexP(
-                        auxPlayer)+1 % self.getPlen()]
-                auxPlayer.setManyCardsToHand(self.cardStack)
-            else:
-                auxPlayer = self.players[self.indexP(
-                    player)-1 % self.getPlen()]
-                while(auxPlayer.hasNoCards):
-                    auxPlayer = self.players[self.indexP(
-                        auxPlayer)-1 % self.getPlen()]
-                auxPlayer.setManyCardsToHand(self.cardStack)
-            self.cardStack = []
-            self.endTurn(player, 1)
+            auxPlayer = self.returnPlayer_Order(player)
+            while(auxPlayer.hasNoCards):
+                auxPlayer = self.returnPlayer_Order(auxPlayer)
+            self.getAllFromStack(auxPlayer)
+            self.endTurn(auxPlayer)  # posiblemente de error
         else:
             self.endTurn(player)
+
+    def returnCareCaca(self):
+        if (self.getPlen() == 1):
+            return self.players[0]
+        else:
+            return None

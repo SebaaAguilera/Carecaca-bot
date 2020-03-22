@@ -2,8 +2,6 @@
 import os
 
 import discord
-from discord import Role
-import random
 from dotenv import load_dotenv
 from discord.ext import commands
 import card
@@ -16,28 +14,11 @@ GUILD = os.getenv('DISCORD_GUILD')
 client = discord.Client()
 bot = commands.Bot(command_prefix='!')
 
-# inGameVariables
-INGAME = False
-WANT_TO_RESTART = False
-PLAYERS = []
-deck = []
-stackCards = []
-
-# Game Functions
-
-
-def deleteData():
-    INGAME = False
-    WANT_TO_RESTART = False
-    PLAYERS = []
-    deck = card.deck().sort()
-    stackCards = []
-    # delete category
-
 
 @bot.event
 async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
+
 
 @bot.event
 async def on_member_join(member):
@@ -45,6 +26,7 @@ async def on_member_join(member):
     await member.dm_channel.send(
         f'Hi {member.name}, Bienvenido al Servidor Oficial de CareCaca!'
     )
+
 
 @bot.event
 async def on_ready():
@@ -60,17 +42,14 @@ async def on_ready():
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
-# Functions
-async def create_new_role(guild: discord.Guild, role_name: str, **kargs) -> Role:
-    existing_role = discord.utils.get(guild.roles, name=role_name)
-    if not existing_role:
-        new_role = await guild.create_role(name=role_name, **kargs)
-        print(f'Creating a new role: {role_name}')
-        return new_role
-    else:
-        await existing_role.edit(**kargs)
-        print(f'Role {role_name} already exists!')
-        return existing_role
+# =============================================================================================
+# ====================================== Functions ============================================
+# =============================================================================================
+
+# delete_role
+# ctx:obj role_name:str
+# Delete an existing role
+
 
 async def delete_role(ctx, role_name):
     guild = ctx.guild
@@ -79,71 +58,150 @@ async def delete_role(ctx, role_name):
         print(f'Deleting role: {role.name}')
         await role.delete()
 
-@bot.command(name="testing", help="testing command")
-async def testing(ctx):
-    guild = ctx.guild
-    await create_new_role(guild, "testing", mentionable=True, colour=discord.Colour(0x09c48c))
 
-@bot.command(name='start', help='Start a new game')
-async def startGame(ctx):
-    if INGAME:
-        WANT_TO_RESTART = True
-        await ctx.send("u sure?")
+# manage_text_channel
+# ctx:obj channel_name:str status:str category:discord.Category
+# Can create and remove channel (depends of status)
+async def manage_text_channel(ctx, channel_name, status, category):
+    guild = ctx.message.guild
+    message = ctx.message
+    if status == "add":
+        # Remove Permissions for @everyone
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(read_messages=False, send_messages=False, view_channel=False),
+        }
+        # Create channel without permission for @everyone
+        print(f'Creating text channel: {channel_name}')
+        await guild.create_text_channel(channel_name, category=category, overwrites=overwrites)
+    elif status == "remove":
+        channels = category.channels
+        for channel in channels:
+            # Searching channel
+            if channel.name == channel_name:
+                # Delete Channel
+                print(f'Deleting channel: {channel.name}')
+                await channel.delete()
     else:
-        await ctx.send("let's begin")
+        # Catch wrong use of 'status' attribute in function
+        print(f'Wrong attribute: {status}')
+        return 0
+
+# set_premission_text_channel
+# ctx:obj channel_name:str role_name:str category:discord.Category
+# Set Permission from role to Text Channel
 
 
-@bot.command(name='yes', help='Aproves the reStart')
-async def yesRestart(ctx):
-    if WANT_TO_RESTART:
-        await ctx.send("restarting")
+async def set_permission_text_channel(ctx, channel_name, role_name, category):
+    guild = ctx.message.guild
+    channels = category.channels
+    # Get Role object
+    role = discord.utils.get(guild.roles, name=role_name)
+    for channel in channels:
+        # Searching Channel
+        if channel.name == channel_name:
+            # Set Permission to role @role_name
+            overwrite = discord.PermissionOverwrite()
+            overwrite.send_messages = True
+            overwrite.read_messages = True
+            overwrite.view_channel = True
+            # Now @role_name can view channel, send and read messages
+            await channel.set_permissions(role, overwrite=overwrite)
+
+# =============================================================================================
+# ====================================== Bot Commands =========================================
+# =============================================================================================
+
+# General Commands
 
 
-@bot.command(name='no', help='Disaproves the restart')
-async def dontRestart(ctx):
-    if WANT_TO_RESTART:
-        WANT_TO_RESTART = False
-        await ctx.send("ok")
+@bot.command(name="clear", help="Clear text channel")
+async def clear(ctx, amount=100):
+    channel = ctx.message.channel
+    messages = []
+    async for message in channel.history(limit=amount):
+        messages.append(message)
+    await channel.delete_messages(messages)
+    await ctx.send(f'{len(messages)} messages deleted by {ctx.message.author.name}.')
 
-@bot.command(name="createRole", help="Create a role with name <name>")
-async def createRole(ctx, *args):
-    guild = ctx.guild
-    await guild.create_role(name="{}".format(args[0]), colour=discord.Colour(0x09c48c))
-    beautifulMsg = discord.Embed(title='{} has been created'.format(args[0]))
-    await ctx.send("New role created", embed=beautifulMsg)
 
-@bot.command(name="addRole", help="Add an existing role to message author player")
-async def addRole(ctx, *args):
-    role = discord.utils.get(ctx.guild.roles, name="{}".format(args[0]))
-    user = ctx.message.author
-    await user.add_roles(role)
-    beautifulMsg = discord.Embed(title='Role {} has been added to player {}'.format(args[0], user))
-    await ctx.send("New role assigned", embed=beautifulMsg)
-
-@bot.command(name="startGame", help="Parte el juego")
+@bot.command(name="start-game", help="Start a CareCaca game")
 async def startGame(ctx):
+    await ctx.send(f'{ctx.message.author.name} has started a Carecaca Game')
+    await ctx.send("Preparing room...")
     members = ctx.message.guild.members
     guild = ctx.guild
-    for member in members:
-        if member.name == "Carecaca-bot":
+
+    # Text Channels will agrupate in category 'Players'
+    main_category = await guild.create_category_channel("Players")
+
+    # Creating roles
+    for i in range(len(members)):
+        if members[i].name == "Carecaca-bot":
             continue
-        role_name = "jugador" + member.name    
-        await create_new_role(guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
-        
-    for member in members:
-        role_name = "jugador" + member.name   
-        role = discord.utils.get(guild.roles, name=role_name)
-        if role:        
-            await member.add_roles(role)
+        if members[i].status != discord.Status.offline:
+            role_name = "player-" + str(i)
+            print(f'Creating role: {role_name}')
+            await guild.create_role(name=role_name, mentionable=True, colour=discord.Colour(0x09c48c))
 
-@bot.command(name="endGame", help="Termina el juego")
+    # Adding roles to members online
+    for i in range(len(members)):
+        if members[i].name == "Carecaca-bot":
+            continue
+        if members[i].status != discord.Status.offline:
+            role_name = "player-" + str(i)
+            role = discord.utils.get(guild.roles, name=role_name)
+            if role:
+                print(f'Adding role: {role_name} to {members[i].name}')
+                await members[i].add_roles(role)
+
+    # Create Text Channels
+    for i in range(len(members)):
+        if members[i].name == "Carecaca-bot":
+            continue
+        if members[i].status != discord.Status.offline:
+            channel_name = "player-" + str(i)
+            await manage_text_channel(ctx, channel_name, "add", main_category)
+
+    # Setting Permission from Roles to Text Channels
+    for i in range(len(members)):
+        if members[i].name == "Carecaca-bot":
+            continue
+        if members[i].status != discord.Status.offline:
+            channel_name = "player-" + str(i)
+            role_name = "player-" + str(i)
+            await set_permission_text_channel(ctx, channel_name, role_name, main_category)
+
+    await ctx.send('Room is ready, please join to your Text Channel')
+
+
+@bot.command(name="end-game", help="End a CareCaca game")
 async def endGame(ctx):
+    await ctx.send(f'{ctx.message.author.name} has ended the game')
+    await ctx.send('Deleting room...')
     guild = ctx.guild
     members = ctx.message.guild.members
-    for member in members:
-        role_name = "jugador" + member.name 
-        await delete_role(ctx, role_name)
+    category = discord.utils.get(guild.categories, name="Players")
 
+    # Deleting Roles
+    for i in range(len(members)):
+        if members[i].name == "Carecaca-bot":
+            continue
+        if members[i].status != discord.Status.offline:
+            role_name = "player-" + str(i)
+            await delete_role(ctx, role_name)
+
+    # Deleting Text Channels
+    for i in range(len(members)):
+        if members[i].name == "Carecaca-bot":
+            continue
+        if members[i].status != discord.Status.offline:
+            channel_name = "player-" + str(i)
+            await manage_text_channel(ctx, channel_name, "remove", category)
+
+    # Deleting category 'Players'
+    await category.delete(reason="End game")
+
+    await ctx.send('Room was delete')
 
 
 bot.run(TOKEN)
