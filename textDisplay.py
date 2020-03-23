@@ -64,7 +64,7 @@ class TextDisplay(object):
         else:
             return ":blue_book:"
 
-    def tableDisplay(self):
+    def outPutTextDisplay(self):
         plInfo = self.getPlayersDisplay()
         turnOwner = self.controller.getTurnOwner().getId()
         dpls_per_player = ""

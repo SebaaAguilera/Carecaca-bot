@@ -11,9 +11,10 @@ JK = 30
 
 
 class ImgDisplay(object):
-    def __init__(self, controller, folder="/PNG"):
+    def __init__(self, bot, controller, folder="/PNG"):
         self.controller = controller
         self.folder = folder
+        self.bot = bot
 
     def getPlayersDisplay(self):
         numOfPlayers = self.controller.getPlen()
@@ -79,7 +80,6 @@ class ImgDisplay(object):
                 name += "D"
             name += ".png"
             return name
-
         else:
             return "purple_back.png"
 
@@ -93,17 +93,14 @@ class ImgDisplay(object):
             fs = []
             for j in range(0, 2*m):
                 if j <= lenTable:
-                    im = Image.open(p[1], 'r')
-                    fs.append(im)
+                    im = Image.open(p[1][j], 'r')
                 elif lenTable < j < m:
                     im = Image.open("PNG/gray_back.png", 'r')
-                    fs.append(im)
                 elif m <= j < lenHidden:
-                    im = Image.open(p[2], 'r')
-                    fs.append(im)
+                    im = Image.open(p[2][j], 'r')
                 else:
                     im = Image.open("PNG/gray_back.png", 'r')
-                    fs.append(im)
+                fs.append(im)
             x, y = fs[0].size
             ncol = 2
             nrow = 2
@@ -113,8 +110,69 @@ class ImgDisplay(object):
                 cvs.paste(fs[i], (px, py))
             plCards.append(cvs)
             # cvs.show()
+        return plCards
 
     def handCards(self, info):
+        plCards = []
+        for i in range(0, self.controller.getPlen()):
+            p = info[i]
+            lenHand = len(p[0])
+            fs = []
+            resto = lenHand % 3
+            if resto == 0:
+                resto = 3
+            for j in range(0, lenHand+(3-resto)):
+                if j >= lenHand:
+                    im = Image.open("PNG/gray_back.png", 'r')
+                else:
+                    im = Image.open(p[0][j], 'r')
+                fs.append(im)
+            x, y = fs[0].size
+            ncol = 3
+            nrow = lenHand+(3-resto) / 3
+            cvs = Image.new('RGB', (x*ncol, y*nrow))
+            for i in range(len(fs)):
+                px, py = x*(i % ncol), y*int(i/ncol)
+                cvs.paste(fs[i], (px, py))
+            plCards.append(cvs)
+        return plCards
+
+    def middleCards(self):
+        fs = []
+        im = Image.open(self.cardDisplay(self.controller.getCardOnTop()), 'r')
+        fs.append(im)
+        if (self.controller.haveCards()):
+            im = Image.open("PNG/purple_back.png", 'r')
+            fs.append(im)
+            x, y = fs[0].size
+            ncol = 2
+            nrow = 1
+            cvs = Image.new('RGB', (x*ncol, y*nrow))
+            for i in range(len(fs)):
+                px, py = x*(i % ncol), y*int(i/ncol)
+                cvs.paste(fs[i], (px, py))
+            return cvs
+        else:
+            return im
+
+    def outputDisplay(self):
+        info = self.getPlayersDisplay()
+        tableC = self.tableCards(info)
+        handC = self.handCards(info)
+        middle = self.middleCards()
+        players = self.controller.getPlayers()
+        for i in range(0, self.controller.getPlen()):
+            for j in range(0, self.controller.getPlen()):
+                if i != j:
+                    # send name of the cards owner bot.message(players[j].getId() + "'s cards:")
+                    # send an image with the cards bot.img(tableC[j])
+                    # someHow we'll have to upload the image to discord itself and then send them to the players
+                    caca = "uwu"
+            # send a msg bot.msg("Cards on the table")
+            # send the cards in the middle of the table bot.img(middle)
+            # send name of the cards owner bot.message("Your cards:")
+            # send an image with the cards in the table bot.img(tableC[i])
+            # send an image with the cards in the hand bot.img(hand[i])
 
 
 def printTest():
