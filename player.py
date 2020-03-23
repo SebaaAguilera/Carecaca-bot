@@ -55,7 +55,3 @@ class Player(object):
 
     def hasNoCards(self):
         return self.getHandLen == 0 and self.getTableLen() == 0 and self.getHiddenLen() == 0
-
-    # display Hand
-    # display Table
-    # display hidden

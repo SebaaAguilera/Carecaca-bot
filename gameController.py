@@ -46,6 +46,9 @@ class GameController(object):
         self.cardStack = []
         self.cardOnTop = None
 
+    def haveCards(self):
+        return len(self.deck) > 0
+
     def burn(self):
         self.cardStack = []
 
@@ -99,7 +102,7 @@ class GameController(object):
             self.getAllFromStack(player)
             self.endTurn(player)
 
-    def pCOS_False(self, player, card):  # revisar que solo puede jugar en su turno
+    def pCOS_False(self, player, card):
         if (card == 0):
             # have no cards
             self.getAllFromStack(player)

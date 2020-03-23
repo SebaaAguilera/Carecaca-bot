@@ -13,6 +13,9 @@ class Card(object):
     def getValue(self):
         return self.value
 
+    def getSuit(self):
+        return self.suit
+
     def equalValue(self, card):
         return self.getValue() == card.getValue()
 
@@ -56,22 +59,22 @@ def deck():
     for k in range(0, 2):
         for i in range(0, 4):
             deck.append(Card(JK, "all"))
-            if i == 0:
+            if (i == 0):
                 suit = "Pica"
-            elif i == 1:
+            elif (i == 1):
                 suit = "Clover"
-            elif i == 2:
+            elif (i == 2):
                 suit = "Heart"
-            elif i == 3:
+            elif (i == 3):
                 suit = "Diamond"
             for j in range(1, 14):
-                if j == 1:
+                if (j == 1):
                     deck.append(Card(A, suit))
-                elif j == 11:
+                elif (j == 11):
                     deck.append(Card(J, suit))
-                elif j == 12:
+                elif (j == 12):
                     deck.append(Card(Q, suit))
-                elif j == 13:
+                elif (j == 13):
                     deck.append(Card(K, suit))
                 else:
                     deck.append(Card(j, suit))

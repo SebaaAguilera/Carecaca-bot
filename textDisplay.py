@@ -54,11 +54,11 @@ class TextDisplay(object):
             elif (value == 10):
                 return ":one::zero:"
             elif (value == J):
-                return ":regional_indicator_a:"
-            elif (value == Q):
                 return ":regional_indicator_j:"
+            elif (value == Q):
+                return ":regional_indicator_q:"
             elif (value == K):
-                return ":regional_indicator_a:"
+                return ":regional_indicator_k:"
             elif (value == JK):
                 return ":black_jocker:"
         else:
@@ -74,6 +74,8 @@ class TextDisplay(object):
                     dpls_per_player += plInfo[j][0] + \
                         plInfo[j][2] + plInfo[j][3] + "\n\n"
             dpls_per_player += "The trun owner is: " + turnOwner + "\n\n"
+            dpls_per_player += "Card on Top: " + self.controller.getCardOnTop() + "\n"
+            dpls_per_player += "Are cards to draw? " + self.controller.haveCards() + "\n\n"
             dpls_per_player += "YourCards: \n"
             dpls_per_player += plInfo[i][0] + \
                 plInfo[i][1] + plInfo[i][2] + plInfo[i][3]
