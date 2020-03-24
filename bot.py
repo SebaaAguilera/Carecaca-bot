@@ -1,16 +1,23 @@
 # bot.py
+
+# System
 import os
 import asyncio
 
+
+# Discord
 import discord
 import logging
 from discord import Role
 from dotenv import load_dotenv
 from discord.ext import commands
-import card
-import player as p
-import gameController as gc
 
+
+# Custom
+import card
+import player
+import gameController as gc
+import textDisplay as td
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -35,7 +42,7 @@ logger.addHandler(handler)
 # ====================================== Class ================================================
 # =============================================================================================
 
-gameController = gc.GameController([], False)
+gameController = gc.GameController()
 
 
 @bot.event
@@ -102,9 +109,9 @@ async def add_role_to_player(ctx, role, member):
 # role: discord.Role obj
 # Connect Player objecto to Member with Role Member.
 async def asign_member_to_object_player(role):
-    player = p.Player(role.name)
-    print(f'Object player {player.getId()} has been assigned to {role.name}')
-    gameController.players.append(player)
+    pl = player.Player(role.name)
+    print(f'Object player {pl.getId()} has been assigned to {role.name}')
+    gameController.setPlayer(pl)
 
 
 
@@ -183,7 +190,17 @@ async def clear(ctx, amount=100):
     await ctx.send(f'{len(messages)} messages deleted by {ctx.message.author.name}.')
 
 @bot.command(name="start-game", help="Start a CareCaca game")
-async def startGame(ctx):
+async def startGame(ctx, *args):
+    if len(args) > 0:
+        if args[0] == "True":
+            gameController.setFlash(True)
+        elif args[0] == "False":
+            gameController.setFlash(False)
+        else:
+            e = discord.Embed(title=':x: Invalid argument, if you wanna play with Flash use ``!start-game True``', colour=discord.Colour(0xff3232))
+            await ctx.send("", embed=e)
+            return
+
     await ctx.send(f'{ctx.message.author.name} has started a Carecaca Game')
     await ctx.send("Preparing room...")
     members = ctx.message.guild.members
@@ -204,8 +221,10 @@ async def startGame(ctx):
             await set_permission_text_channel(ctx, channel_name, role_name, main_category)
 
 
+    e = discord.Embed(title=':white_check_mark: Room is ready, please join to your Text Channel', colour=discord.Colour(0x09c48c))
+    await ctx.send('', embed=e)
+
     
-    await ctx.send('Room is ready, please join to your Text Channel')
 
     print(gameController.getPlayers()) # todo bien
     gameController.initGame()
@@ -234,6 +253,8 @@ async def endGame(ctx):
 
     await ctx.send('Room has been deleted')
 
+    gameController.resetController()
+
 
 @bot.command(name="emoji", help="testing emoji messages")
 async def emoji(ctx):
@@ -253,5 +274,67 @@ async def get_players(ctx):
         string += player.getId() + "\n"
     e = discord.Embed(title=f'{string}')
     await ctx.send(f"Jugadores conectados: \n", embed=e)
+
+# =============================================================================================
+# ====================================== Game Commands ========================================
+# =============================================================================================
+
+# !p <cardNumber>
+# 
+@bot.command(name="p")
+async def p(ctx, *, args):
+    display = td.textDisplay(gameController)
+
+    if gameController.playing:
+        player = gameController.getPlayerById(ctx.message.author.role.name)
+        cardOnTop = gameController.getCardOnTop()
+        turnOwner = gameController.getTurnOwner()
+        gameController.putCardFromHand(player, args)
+        if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():
+            # Oye no es tu turno, sapo qlo || 
+            pass
+            
+    else:
+        ctx.send(":x: Nobody are playing now. If you want to start a game, use ``!start-game``")
+
+@bot.command(name="t")
+async def t(ctx, *, args):
+    display = td.textDisplay(gameController)
+    
+    if gameController.playing:
+        player = gameController.getPlayerById(ctx.message.author.role.name)
+        cardOnTop = gameController.getCardOnTop()
+        turnOwner = gameController.getTurnOwner()
+        gameController.putCardFromHand(player, args)
+        if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():
+            # Oye no es tu turno, sapo qlo || 
+            pass
+            
+    else:
+        ctx.send(":x: Nobody are playing now. If you want to start a game, use ``!start-game``")
+
+@bot.command(name="h")
+async def h(ctx, *, args):
+    display = td.textDisplay(gameController)
+    
+    if gameController.playing:
+        player = gameController.getPlayerById(ctx.message.author.role.name)
+        cardOnTop = gameController.getCardOnTop()
+        turnOwner = gameController.getTurnOwner()
+        gameController.putCardFromHand(player, args)
+        if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():
+            # Oye no es tu turno, sapo qlo || 
+            pass
+            
+    else:
+        ctx.send(":x: Nobody are playing now. If you want to start a game, use ``!start-game``")
+
+# list
+@bot.command(name="n")
+async def n(ctx):
+    if gameController.playing:
+        player = gameController.getPlayerById(ctx.message.author.role.name)
+        gameController.takeAll(player)
+
 
 bot.run(TOKEN)

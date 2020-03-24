@@ -65,7 +65,7 @@ class TextDisplay(object):
             return ":blue_book:"
 
     # return a list with the display from the player 0 to the player len(players)-1
-    def outPutTextDisplay(self):
+       def outPutTextDisplay(self):
         plInfo = self.getPlayersDisplay()
         turnOwner = self.controller.getTurnOwner().getId()
         dpls_per_player = ""
