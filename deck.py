@@ -10,6 +10,11 @@ class Deck(object):
 
     def pop(self, index=-1):
         return self.deck.pop(index)
+        """
+        card = self.get(index)
+        self.deck.remove(card)
+        return card
+        """
 
     def len(self):
         return len(self.deck)
@@ -17,11 +22,19 @@ class Deck(object):
     def get(self, index):
         return self.deck[index]
 
+    def popAListNyLen(self, lenght, x=[]):
+        return [x.append(self.pop()) for i in range(0, 3)]
+
     def popCardByValue(self, cardValue):
         for i in range(0, 108):
             if cardValue == self.get(i).getValue():
-                # , print("pop para los h " + str(dck.len()))
                 return self.pop(i)
+
+    def popAListByValues(self, cardList):
+        x = []
+        for cardValue in cardList:
+            x.append(self.popCardByValue(cardValue))
+        return x
 
     def initDeck(self):
         for i in range(0, 4):

@@ -2,11 +2,11 @@ from card import *
 
 
 class Player(object):
-    def __init__(self, id, hand=[], visible=[], hiddenTable=[]):
+    def __init__(self, id, hand=list()):  # , hand, visible, hiddenTable
         self.id = id
         self.hand = hand
-        self.visible = visible
-        self.hiddenTable = hiddenTable
+        self.visible = []
+        self.hiddenTable = []
 
     def getId(self):
         return self.id
@@ -47,6 +47,10 @@ class Player(object):
     def setVisible(self, card):
         self.visible.append(card)
 
+    def setManyCardsToVisible(self, cards):
+        for card in cards:
+            self.visible.append(card)
+
     def getVisible(self):
         return self.visible
 
@@ -66,6 +70,10 @@ class Player(object):
 
     def setHiddenCard(self, card):
         self.hiddenTable.append(card)
+
+    def setManyCardsToHidden(self, cards):
+        for card in cards:
+            self.hiddenTable.append(card)
 
     def getHidden(self):
         return self.hiddenTable

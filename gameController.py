@@ -15,17 +15,20 @@ class GameController(object):
         self.flash = flash
         self.counter = 0
 
+    def initGame(self):
+        print(self.deck.len())
+        for player in self.players:
+            for i in range(0, 3):  # Add 3 cards per player in each box
+                player.setHand(self.deck.pop())
+                print(self.deck.len())
+                player.setVisible(self.deck.pop())
+                print(self.deck.len())
+                player.setHiddenCard(self.deck.pop())
+                print(self.deck.len())
+        self.turnOwner = self.players[0]
+
     def changeDeck(self, deck):
         self.deck = deck
-
-    def initGame(self):
-        for player in self.players:
-            # Add 3 cards per player in each box
-            while(len(player.getHand()) < 3):
-                player.setHand(self.deck.pop())
-                player.setVisible(self.deck.pop())
-                player.setHiddenCard(self.deck.pop())
-        self.turnOwner = self.players[0]
 
     def changeOrder(self):
         self.order = not self.order
@@ -150,7 +153,7 @@ class GameController(object):
     # command !n
     def takeAll(self, player):
         if player.equalId(self.turnOwner):
-            self.getAllFromStack()
+            self.getAllFromStack(player)
             self.endTurn(player)
 
     def returnPlayer_Order(self, player, skip=0):
