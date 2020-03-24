@@ -1,5 +1,6 @@
 # bot.py
 import os
+import asyncio
 
 import discord
 import logging
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 import card
 import player
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -50,15 +52,6 @@ async def on_ready():
 # =============================================================================================
 # ====================================== Functions ============================================
 # =============================================================================================
-# add_role_to_player
-# role_name:str player: discord.Guild.member obj
-# Add role to Player
-async def add_role_to_player(role_name, player):
-    role = discord.utils.get(guild.roles, name=role_name)
-    if role:
-        print(f'Adding role: {role_name} to {player.name}')
-        await player.add_roles(role)
-        await print(f'Role {role_name} has been asigment to {player.name}')
 
 # create_new_role
 # guild: discord.Guild role_name: str **kargs: args
@@ -68,12 +61,26 @@ async def create_new_role(guild: discord.Guild, role_name: str, **kargs) -> Role
     if not existing_role:
         print(f'Creating a new role: {role_name}')
         new_role = await guild.create_role(name=role_name, **kargs)
-        await print(f'Role {new_role.name} has been created successfuly')
         return new_role
     else:
         await existing_role.edit(**kargs)
+        return None
+
+async def create_role(ctx, player, guild: discord.Guild, role_name: str, **kargs):
+    role = await create_new_role(guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
+    if role != None:
+        print(f'Role {role.name} has been created successfuly')
+        await add_role_to_player(ctx, role, player)
+    else:
         print(f'Role {role_name} already exists!')
-        return existing_role
+
+# add_role_to_player
+# role_name:str player: discord.Guild.member obj
+# Add role to Player
+async def add_role_to_player(ctx, role, player):
+    print(f'Adding role: {role.name} to {player.name}')
+    await player.add_roles(role)
+    print(f'Role {role.name} has been asigment to {player.name}')
 
 # delete_role
 # ctx:obj role_name:str 
@@ -164,8 +171,7 @@ async def startGame(ctx):
         if members[i].status != discord.Status.offline:
             role_name = "player-" + str(i)
             channel_name = role_name
-            await create_new_role(guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
-            await add_role_to_player(role_name, members[i])
+            await create_role(ctx, members[i], guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))      
             await manage_text_channel(ctx, channel_name, "add", main_category)
             await set_permission_text_channel(ctx, channel_name, role_name, main_category)
     
