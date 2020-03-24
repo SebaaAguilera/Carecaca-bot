@@ -1,3 +1,5 @@
+from random import shuffle
+
 A = 20
 J = 11
 Q = 12
@@ -25,19 +27,19 @@ class Card(object):
     def equalCard(self, card):
         return self.equalValue(card) and self.equalSuit(card)
 
-    def geq(self, card):
-        return self.value >= card.value
+    def geq(self, cardValue):
+        return self.value >= cardValue
 
-    def leq(self, card):
-        return self.value <= card.value
+    def leq(self, cardValue):
+        return self.value <= cardValue
 
-    def isValidWith(self, card):
+    def isValidWith(self, cardValue):
         if (self.value in [2, A, JK]):
             return True
-        elif(card.value == 7):
-            return self.leq(card)
+        elif(cardValue == 7):
+            return self.leq(cardValue)
         else:
-            return self.geq(card)
+            return self.geq(cardValue)
 
     def returnEffect(self):
         if(self.value == 8):
@@ -55,10 +57,11 @@ class Card(object):
 
 
 def deck():
-    deck = []
+    dck = []
+    for i in range(0, 3):
+        dck.append(Card(JK, "all"))
     for k in range(0, 2):
         for i in range(0, 4):
-            deck.append(Card(JK, "all"))
             if (i == 0):
                 suit = "Pica"
             elif (i == 1):
@@ -69,19 +72,18 @@ def deck():
                 suit = "Diamond"
             for j in range(1, 14):
                 if (j == 1):
-                    deck.append(Card(A, suit))
+                    dck.append(Card(A, suit))
                 elif (j == 11):
-                    deck.append(Card(J, suit))
+                    dck.append(Card(J, suit))
                 elif (j == 12):
-                    deck.append(Card(Q, suit))
+                    dck.append(Card(Q, suit))
                 elif (j == 13):
-                    deck.append(Card(K, suit))
+                    dck.append(Card(K, suit))
                 else:
-                    deck.append(Card(j, suit))
-    return deck
+                    dck.append(Card(j, suit))
+    return dck
 
 
-def sortedDeck():
-    deck_ = deck()
-    deck_.sort()
-    return deck_
+def sortedDeck(d=deck()):
+    shuffle(d)
+    return d

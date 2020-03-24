@@ -2,17 +2,23 @@ from card import *
 
 
 class Player(object):
-    def __init__(self, id, hand, table, hiddenTable):
+    def __init__(self, id, hand=[], table=[], hiddenTable=[]):
         self.id = id
         self.hand = hand
         self.table = table
         self.hiddenTable = hiddenTable
 
     def getId(self):
-        return id
+        return self.id
 
     def equalId(self, player):
         return self.getId() == player.getId()
+
+    def hasInHand(self, card):
+        for i in range(0, len(self.hand)):
+            if card == self.hand[i].getValue():
+                return True
+        return False
 
     def setHand(self, card):
         self.hand.append(card)
@@ -27,10 +33,18 @@ class Player(object):
         return len(self.hand)
 
     def popCardFromHand(self, card):
-        return self.hand.pop(self.hand.index(card))
+        for i in range(0, len(self.hand)):
+            if card == self.hand[i].getValue():
+                return self.hand.pop(i)
+
+    def hasInTable(self, card):
+        for i in range(0, len(self.table)):
+            if card == self.table[i].getValue():
+                return True
+        return False
 
     def setTable(self, card):
-        self.hand.table(card)
+        self.table.append(card)
 
     def getTable(self):
         return self.table
@@ -39,19 +53,29 @@ class Player(object):
         return len(self.table)
 
     def popCardFromTable(self, card):
-        return self.hand.pop(self.table.index(card))
+        for i in range(0, len(self.table)):
+            if card == self.table[i].getValue():
+                return self.table.pop(i)
+
+    def hasInHidden(self, card):
+        for i in range(0, len(self.hiddenTable)):
+            if card == self.hiddenTable[i].getValue():
+                return True
+        return False
 
     def setHiddenCard(self, card):
         self.hiddenTable.append(card)
 
-    def getHiddenCards(self):
+    def getHidden(self):
         return self.hiddenTable
 
     def getHiddenLen(self):
         return len(self.hiddenTable)
 
-    def popCardFromHidden(self, index):
-        return self.hand.pop(index)
+    def popCardFromHidden(self, card):
+        for i in range(0, len(self.hiddenTable)):
+            if card == self.hiddenTable[i].getValue():
+                return self.hiddenTable.pop(i)
 
     def hasNoCards(self):
         return self.getHandLen == 0 and self.getTableLen() == 0 and self.getHiddenLen() == 0

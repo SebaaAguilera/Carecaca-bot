@@ -14,13 +14,17 @@ class GameController(object):
         self.flash = flash
         self.counter = 0
 
+    def changeDeck(self, deck):
+        self.deck = deck
+
     def initGame(self):
         for player in self.players:
             # Add 3 cards per player in each box
-            for i in range(0, 3):
+            while(len(player.getHand()) < 3):
                 player.setHand(self.deck.pop())
                 player.setTable(self.deck.pop())
                 player.setHiddenCard(self.deck.pop())
+        self.turnOwner = self.players[0]
 
     def changeOrder(self):
         self.order = not self.order
@@ -51,6 +55,7 @@ class GameController(object):
 
     def burn(self):
         self.cardStack = []
+        self.cardOnTop = None
 
     def drawCards(self, player):
         while (len(self.deck) > 0 and player.getHandLen() < 3):
@@ -58,6 +63,9 @@ class GameController(object):
 
     def getTurnOwner(self):
         return self.turnOwner
+
+    def setTurnOwner(self, player):
+        self.turnOwner = player
 
     def getPlayers(self):
         return self.players
@@ -68,8 +76,11 @@ class GameController(object):
     def indexP(self, player):
         return self.players.index(player)
 
-    def addCounter(self, player, card):
-        if (card.equalValue(self.getCardOnTop())):
+    def addCounter(self, player, cardValue):
+        if self.cardOnTop == None:
+            self.counter = 0
+            return False
+        elif (cardValue == self.cardOnTop().getValue()):
             self.counter += 1
             if (self.counter == 4):
                 self.burn()
@@ -77,53 +88,57 @@ class GameController(object):
                 return True
         else:
             self.counter = 0
+            return False
 
-    def pCOS_True(self, player, card):
-        if(card.isValidWith(self.getCardOnTop())):
-            if(self.flash and card.equalValue(self.cardOnTop)):
-                if (card in player.getHand()):
-                    self.turnOwner = player
-                    self.setCardOnTop(player, player.popCardFromHand(card))
-                elif (card in player.getTable() and player.getHandLen() == 0):
-                    self.turnOwner = player
-                    self.setCardOnTop(player, player.popCardFromTable())
-            elif (player.equalId(self.turnOwner) and not self.flash):
-                if (card in player.getHand()):
-                    self.setCardOnTop(player, player.popCardFromHand(card))
-                elif (card in player.getTable() and player.getHandLen() == 0):
-                    self.setCardOnTop(player, player.popCardFromTable())
+    def putCardAbstract(self, player, cardValue, hasInPlace, handOrEmptyHand=True, hand=True):
+        if(self.getCardOnTop() == None or self.getCardOnTop().isValidWith(cardValue)):
+            if(self.flash and cardValue == self.cardOnTop.getValue()) or player.equalId(self.turnOwner):
+                if hasInPlace:
+                    if handOrEmptyHand:
+                        self.turnOwner = player
+                        if hand:
+                            card = player.popCardFromHand(cardValue)
+                        else:
+                            card = player.popCardFromTable(cardValue)
+                        self.setCardOnTop(player, card)
+                        if (not self.addCounter(player, cardValue)):
+                            self.endTurnEffects(player)
+                # if he/she don't own the card: do nothing
             # not valid player
             else:
                 self.getAllFromStack(player)
-            if (not self.addCounter(player, card)):
-                self.endTurnEffects(player)
+                self.endTurn(player)
         else:
             # wrong card, take all the stack
             self.getAllFromStack(player)
             self.endTurn(player)
 
-    def pCOS_False(self, player, card):
-        if (card == 0):
+    # command !p (card number)
+    def putCardFromHand(self, player, cardValue):
+        self.putCardAbstract(player, cardValue, player.hasInHand(cardValue))
+
+    # command !t (card value)
+    def putCardFromTable(self, player, cardValue):
+        self.putCardAbstract(player, cardValue, player.hasInTable(
+            cardValue), player.getHandLen() == 0, False)
+
+    # command !h (card number)
+    def putCardFromHidden(self, player, cardValue):
+        if (cardValue == 0 and (player.equalId(self.turnOwner))):
             # have no cards
             self.getAllFromStack(player)
             self.endTurn(player)
         elif (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getTableLen == 0):
-            if (player.getHiddenCards()[card % 10 - 1].isValidWith(self.getCardOnTop())):
+            if (player.getHidden()[cardValue % 10 - 1].isValidWith(self.getCardOnTop().getValue())):
                 self.setCardOnTop(
-                    player, player.popCardFromHidden(card % 10 - 1))
-                if (not self.addCounter(player, card)):
+                    player, player.popCardFromHidden(cardValue % 10 - 1))
+                if (not self.addCounter(player, cardValue)):
                     self.endTurnEffects(player)
             else:
                 # wrong card, take all
-                player.setHand(player.popCardFromHidden(card % 10 - 1))
+                player.setHand(player.popCardFromHidden(cardValue % 10 - 1))
                 self.getAllFromStack(player)
                 self.endTurn(player)
-
-    def putCardOnStack(self, player, card):
-        if (isinstance(card, Card)):  # atenzao con esto
-            self.pCOS_True(player, card)
-        else:
-            self.pCOS_False(player, card)
 
     def returnPlayer_Order(self, player, skip=0):
         return self.players[(self.indexP(
@@ -136,6 +151,9 @@ class GameController(object):
         self.turnOwner = auxPlayer
 
     def endTurnEffects(self, player):
+        # maybe i should apply null pattern here
+        if self.cardOnTop == None:
+            self.endTurn(player)
         effect = self.getCardOnTop().returnEffect()
         if (effect == "skip"):
             self.endTurn(1)
