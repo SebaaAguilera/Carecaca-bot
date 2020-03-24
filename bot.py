@@ -29,6 +29,7 @@ async def on_member_join(member):
         f'Hi {member.name}, Bienvenido al Servidor Oficial de CareCaca!'
     )
 
+
 @bot.event
 async def on_ready():
 
@@ -198,6 +199,7 @@ async def endGame(ctx):
 async def emoji(ctx):
     await ctx.send(':regional_indicator_a:')
 
+    await ctx.send('Room was delete')
 
 
 bot.run(TOKEN)
