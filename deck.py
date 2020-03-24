@@ -22,8 +22,11 @@ class Deck(object):
     def get(self, index):
         return self.deck[index]
 
-    def popAListNyLen(self, lenght, x=[]):
-        return [x.append(self.pop()) for i in range(0, 3)]
+    def popAListByLen(self, lenght):
+        x = []
+        while len(x) < lenght:
+            x.append(self.pop())
+        return x
 
     def popCardByValue(self, cardValue):
         for i in range(0, 108):
