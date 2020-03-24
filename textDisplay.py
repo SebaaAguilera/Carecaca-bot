@@ -80,3 +80,5 @@ class TextDisplay(object):
             dpls_per_player += "YourCards: \n"
             dpls_per_player += plInfo[i][0] + \
                 plInfo[i][1] + plInfo[i][2] + plInfo[i][3]
+
+    
