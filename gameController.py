@@ -6,6 +6,7 @@ from deck import *
 
 class GameController(object):
     def __init__(self):
+        self.playing = False
         self.players = []
         self.deck = Deck(True)
         self.cardStack = []
@@ -16,6 +17,7 @@ class GameController(object):
         self.counter = 0
 
     def resetController(self):
+        self.playing = False
         self.players = []
         self.deck = Deck(True)
         self.cardStack = []
@@ -37,9 +39,13 @@ class GameController(object):
             player.setManyCardsToVisible(self.deck.popAListByLen(3))
             player.setManyCardsToHidden(self.deck.popAListByLen(3))
         self.turnOwner = self.players[0]
+        self.playing = True
 
     def changeDeck(self, deck):
         self.deck = deck
+
+    def getOrder(self):
+        return self.order
 
     def changeOrder(self):
         self.order = not self.order
@@ -59,6 +65,9 @@ class GameController(object):
 
     def getCardOnTop(self):
         return self.cardOnTop
+
+    def getStack(self):
+        return self.cardStack
 
     def getAllFromStack(self, player):
         player.setManyCardsToHand(self.cardStack)
