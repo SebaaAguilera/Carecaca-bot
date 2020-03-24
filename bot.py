@@ -8,12 +8,18 @@ from discord import Role
 from dotenv import load_dotenv
 from discord.ext import commands
 import card
-import player
+import player as p
+import gameController as gc
 
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
+
+# =============================================================================================
+# ====================================== Log Status ===========================================
+# =============================================================================================
+
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='!')
@@ -24,6 +30,14 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
     
+
+# =============================================================================================
+# ====================================== Class ================================================
+# =============================================================================================
+
+gameController = gc.GameController([], False)
+
+
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
@@ -66,21 +80,35 @@ async def create_new_role(guild: discord.Guild, role_name: str, **kargs) -> Role
         await existing_role.edit(**kargs)
         return None
 
-async def create_role(ctx, player, guild: discord.Guild, role_name: str, **kargs):
+async def create_role(ctx, member, guild: discord.Guild, role_name: str, **kargs):
     role = await create_new_role(guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
     if role != None:
         print(f'Role {role.name} has been created successfuly')
-        await add_role_to_player(ctx, role, player)
+        await add_role_to_player(ctx, role, member)
     else:
         print(f'Role {role_name} already exists!')
 
 # add_role_to_player
-# role_name:str player: discord.Guild.member obj
+# role_name:str member: discord.Guild.member obj
 # Add role to Player
-async def add_role_to_player(ctx, role, player):
-    print(f'Adding role: {role.name} to {player.name}')
-    await player.add_roles(role)
-    print(f'Role {role.name} has been asigment to {player.name}')
+async def add_role_to_player(ctx, role, member):
+    print(f'Adding role: {role.name} to {member.name}')
+    await member.add_roles(role)
+    print(f'Role {role.name} has been asigment to {member.name}')
+    await asign_member_to_object_player(role)
+
+
+# assign_member_to_object_player
+# role: discord.Role obj
+# Connect Player objecto to Member with Role Member.
+async def asign_member_to_object_player(role):
+    player = p.Player(role.name)
+    print(f'Object player {player.getId()} has been assigned to {role.name}')
+    gameController.players.append(player)
+
+
+
+
 
 # delete_role
 # ctx:obj role_name:str 
@@ -174,8 +202,13 @@ async def startGame(ctx):
             await create_role(ctx, members[i], guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))      
             await manage_text_channel(ctx, channel_name, "add", main_category)
             await set_permission_text_channel(ctx, channel_name, role_name, main_category)
+
+
     
     await ctx.send('Room is ready, please join to your Text Channel')
+
+    print(gameController.getPlayers()) # todo bien
+    gameController.initGame()
         
 
 @bot.command(name="end-game", help="End a CareCaca game")
@@ -201,6 +234,7 @@ async def endGame(ctx):
 
     await ctx.send('Room has been deleted')
 
+
 @bot.command(name="emoji", help="testing emoji messages")
 async def emoji(ctx):
     await ctx.send(':regional_indicator_a:')
@@ -211,5 +245,13 @@ async def emoji(ctx):
 async def hi(ctx):
     await ctx.send(f'Hi {ctx.message.author.name}, nice to meet you! :heart:')
 
+@bot.command(name="get-players", help="Print currently players (???")
+async def get_players(ctx):
+    players = botHelper.getPlayers()
+    string = ""
+    for player in players:
+        string += player.getId() + "\n"
+    e = discord.Embed(title=f'{string}')
+    await ctx.send(f"Jugadores conectados: \n", embed=e)
 
 bot.run(TOKEN)
