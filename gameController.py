@@ -5,15 +5,31 @@ from deck import *
 
 
 class GameController(object):
-    def __init__(self, players, flash):
-        self.players = players
+    def __init__(self):
+        self.players = []
         self.deck = Deck(True)
         self.cardStack = []
         self.cardOnTop = None
         self.turnOwner = None
         self.order = True  # true: right, false: left
-        self.flash = flash
+        self.flash = False
         self.counter = 0
+
+    def resetController(self):
+        self.players = []
+        self.deck = Deck(True)
+        self.cardStack = []
+        self.cardOnTop = None
+        self.turnOwner = None
+        self.order = True  # true: right, false: left
+        self.flash = False
+        self.counter = 0
+
+    def setPlayer(self,player):
+        self.players.append(player)
+    
+    def setFlash(self,flash):
+        self.flash = flash
 
     def initGame(self):
         for player in self.players:
@@ -49,6 +65,10 @@ class GameController(object):
         self.cardStack = []
         self.cardOnTop = None
 
+    def invalidMove(self, player):
+        self.getAllFromStack(player)
+        self.addCounter(player)
+
     def haveCards(self):
         return self.deck.len() > 0
 
@@ -80,8 +100,10 @@ class GameController(object):
     def indexP(self, player):
         return self.players.index(player)
 
-    def addCounter(self, player, cardValue):
-        if self.cardOnTop is None:
+    def addCounter(self, player, cardValue=0):
+        if cardValue==0:
+            self.counter = 0
+        elif self.cardOnTop is None:
             self.counter = 1
             return False
         elif (cardValue == self.cardOnTop.getValue()):
@@ -113,11 +135,10 @@ class GameController(object):
                 # if he/she don't own the card: do nothing
             # not valid player
             else:
-                self.getAllFromStack(player)
-                self.endTurn(player)
+                self.invalidMove(player)
         else:
             # wrong card, take all the stack
-            self.getAllFromStack(player)
+            self.invalidMove(player)
             self.endTurn(player)
 
     # command !p (card number)
@@ -140,13 +161,13 @@ class GameController(object):
             else:
                 # wrong card, take all
                 player.setHand(player.popCardFromHidden(cardValue - 1))
-                self.getAllFromStack(player)
+                self.invalidMove(player)
                 self.endTurn(player)
 
     # command !n
     def takeAll(self, player):
         if player.equalId(self.turnOwner):
-            self.getAllFromStack(player)
+            self.invalidMove(player)
             self.endTurn(player)
 
     def returnPlayer_Order(self, player, skip=0):
