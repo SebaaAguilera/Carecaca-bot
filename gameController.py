@@ -131,20 +131,15 @@ class GameController(object):
 
     # command !h (card number)
     def putCardFromHidden(self, player, cardValue):
-        if (cardValue == 0 and (player.equalId(self.turnOwner))):
-            # have no cards
-            self.getAllFromStack(player)
-            self.endTurn(player)
-
         if (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getVisibleLen == 0):
-            if (player.getHidden()[cardValue % 10 - 1].isValidWith(self.getCardOnTop().getValue())):
+            if (player.getHidden()[cardValue - 1].isValidWith(self.getCardOnTop().getValue())):
                 self.setCardOnTop(
-                    player, player.popCardFromHidden(cardValue % 10 - 1))
+                    player, player.popCardFromHidden(cardValue - 1))
                 if (not self.addCounter(player, cardValue)):
                     self.endTurnEffects(player)
             else:
                 # wrong card, take all
-                player.setHand(player.popCardFromHidden(cardValue % 10 - 1))
+                player.setHand(player.popCardFromHidden(cardValue - 1))
                 self.getAllFromStack(player)
                 self.endTurn(player)
 
