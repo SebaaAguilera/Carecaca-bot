@@ -2,9 +2,9 @@ from card import *
 
 
 class Player(object):
-    def __init__(self, id, hand=list()):  # , hand, visible, hiddenTable
+    def __init__(self, id):
         self.id = id
-        self.hand = hand
+        self.hand = []
         self.visible = []
         self.hiddenTable = []
 

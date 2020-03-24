@@ -16,15 +16,10 @@ class GameController(object):
         self.counter = 0
 
     def initGame(self):
-        print(self.deck.len())
         for player in self.players:
-            for i in range(0, 3):  # Add 3 cards per player in each box
-                player.setHand(self.deck.pop())
-                print(self.deck.len())
-                player.setVisible(self.deck.pop())
-                print(self.deck.len())
-                player.setHiddenCard(self.deck.pop())
-                print(self.deck.len())
+            player.setManyCardsToHand(self.deck.popAListByLen(3))
+            player.setManyCardsToVisible(self.deck.popAListByLen(3))
+            player.setManyCardsToHidden(self.deck.popAListByLen(3))
         self.turnOwner = self.players[0]
 
     def changeDeck(self, deck):
@@ -86,10 +81,10 @@ class GameController(object):
         return self.players.index(player)
 
     def addCounter(self, player, cardValue):
-        if self.cardOnTop == None:
-            self.counter = 0
+        if self.cardOnTop is None:
+            self.counter = 1
             return False
-        elif (cardValue == self.cardOnTop().getValue()):
+        elif (cardValue == self.cardOnTop.getValue()):
             self.counter += 1
             if (self.counter == 4):
                 self.burn()
@@ -98,6 +93,9 @@ class GameController(object):
         else:
             self.counter = 0
             return False
+
+    def getCounter(self):
+        return self.counter
 
     def putCardAbstract(self, player, cardValue, hasInPlace, handOrEmptyHand=True, hand=True):
         if(self.getCardOnTop() == None or self.getCardOnTop().isValidWith(cardValue)):
@@ -168,7 +166,7 @@ class GameController(object):
 
     def endTurnEffects(self, player):
         # maybe i should apply null pattern here
-        if self.cardOnTop == None:
+        if self.cardOnTop is None:
             self.endTurn(player)
         effect = self.getCardOnTop().returnEffect()
         if (effect == "skip"):

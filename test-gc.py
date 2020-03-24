@@ -12,28 +12,23 @@ JK = 30
 # Test without flash
 
 dck = Deck(True)
-print(dck.len())
-
-
-def returnList(deck, cardList):
-    x = []
-    for cardValue in cardList:
-        x.append(deck.popCardByValue(cardValue))
-    return x
-
 
 # setHands
-h0 = returnList(dck, [A, JK, 6])
-h1 = returnList(dck, [6, 10, J])
-h2 = returnList(dck, [6, 7, 8])
-h3 = returnList(dck, [6, 7, 2])
+h0 = dck.popAListByValues([6, JK, A])
+h1 = dck.popAListByValues([6, 10, J])
+h2 = dck.popAListByValues([6, 7, 8])
+h3 = dck.popAListByValues([6, 7, 2])
 
 
 # setPlayers
-p0 = Player(0, h0)
-p1 = Player(1, h1)
-p2 = Player(2, h2)
-p3 = Player(3, h3)
+p0 = Player(0)
+p0.setManyCardsToHand(h0)
+p1 = Player(1)
+p1.setManyCardsToHand(h1)
+p2 = Player(2)
+p2.setManyCardsToHand(h2)
+p3 = Player(3)
+p3.setManyCardsToHand(h3)
 
 pl = [p0, p1, p2, p3]
 
@@ -43,39 +38,74 @@ ctr.changeDeck(dck)
 
 # set visible and hidden visibleCards
 for player in ctr.getPlayers():
-    # Add 3 cards per player in each box
-    while(len(player.getVisible()) < 3):
-        player.setVisible(dck.pop())
-        print(dck.len())
-        player.setHiddenCard(dck.pop())
-        print(dck.len())
-
-
-print([i.getValue() for i in p0.getHand()])
-print([i.getValue() for i in p0.getVisible()])
-print([i.getValue() for i in p0.getHidden()])
-print([i.getValue() for i in p1.getHand()])
-print([i.getValue() for i in p1.getVisible)])
-print([i.getValue() for i in p1.getHidden()])
-print([i.getValue() for i in p2.getHand()])
-print([i.getValue() for i in p2.getVisible()])
-print([i.getValue() for i in p2.getHidden()])
-print([i.getValue() for i in p3.getHand()])
-print([i.getValue() for i in p3.getVisible()])
-print([i.getValue() for i in p3.getHidden()])
-
+    player.setManyCardsToVisible(dck.popAListByLen(3))
+    player.setManyCardsToHidden(dck.popAListByLen(3))
 
 # set initial turnOwner
 ctr.setTurnOwner(p0)
 
 # P0 cant put a card from the visible
-visibleCard=p0.getVisible()[0]
-ctr.putCardFromTable(p0, visibleCard.getValue())
+visibleCard = p0.getVisible()[0]
+ctr.putCardFromVisible(p0, visibleCard.getValue())
 assert visibleCard in p0.getVisible()
 assert ctr.getTurnOwner().getId() == p0.getId()
 
 # p0 cant put a card from the hiddenTable
-hiddenCard=p0.getVisible()[0]
+hiddenCard = p0.getHidden()[0]
 ctr.putCardFromHidden(p0, 11)  # 11%10-1=0
 assert hiddenCard in p0.getHidden()
 assert ctr.getTurnOwner().getId() == p0.getId()
+
+
+# p0 put a 6
+handCard = p0.getHand()[0]
+ctr.putCardFromHand(p0, 6)
+assert handCard not in p0.getHand()
+assert p0.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p1.getId()
+assert ctr.getCounter() == 1
+
+
+# p1 put a 6
+handCard = p1.getHand()[0]
+ctr.putCardFromHand(p1, 6)
+assert handCard not in p1.getHand()
+assert p1.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p2.getId()
+assert ctr.getCounter() == 2
+
+# p2 put a 6
+handCard = p2.getHand()[0]
+ctr.putCardFromHand(p2, 6)
+assert handCard not in p2.getHand()
+assert p2.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p3.getId()
+assert ctr.getCounter() == 3
+
+# p3 put a 6 and burns the cards, play again
+handCard = p3.getHand()[0]
+ctr.putCardFromHand(p3, 6)
+assert handCard not in p3.getHand()
+assert p3.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p3.getId()
+assert ctr.getCounter() == 0
+assert ctr.getCardOnTop() is None
+
+"""
+# p3 put a 7
+handCard = p3.getHand()[0]
+ctr.putCardFromHand(p3, 6)
+assert handCard not in p3.getHand()
+assert p3.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p3.getId()
+assert ctr.getCounter() == 1
+
+# i'll assume p0 have no useful cards
+handCard = p3.getHand()[0]
+ctr.takeAll(p0)
+assert handCard not in p3.getHand()
+assert p3.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p3.getId()
+assert ctr.getCounter() == 0"""
+
+print("Finished!")
