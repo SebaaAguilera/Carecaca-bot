@@ -24,7 +24,8 @@ class Player(object):
         self.hand.append(card)
 
     def setManyCardsToHand(self, cards):
-        self.hand += cards
+        for card in cards:
+            self.hand.append(card)
 
     def getHand(self):
         return self.hand

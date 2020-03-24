@@ -75,7 +75,7 @@ class GameController(object):
 
     def getPlayerById(self, id):
         for player in self.players:
-            if player.getId() = id:
+            if player.getId() == id:
                 return player
 
     def getPlen(self):
@@ -149,9 +149,11 @@ class GameController(object):
                 self.getAllFromStack(player)
                 self.endTurn(player)
 
+    # command !n
     def takeAll(self, player):
-        self.getAllFromStack()
-        self.endTurn(player)
+        if player.equalId(self.turnOwner):
+            self.getAllFromStack()
+            self.endTurn(player)
 
     def returnPlayer_Order(self, player, skip=0):
         return self.players[(self.indexP(
