@@ -1,12 +1,13 @@
 
 from card import *
 from player import *
+from deck import *
 
 
 class GameController(object):
     def __init__(self, players, flash):
         self.players = players
-        self.deck = sortedDeck()
+        self.deck = Deck(True)
         self.cardStack = []
         self.cardOnTop = None
         self.turnOwner = None
@@ -17,6 +18,7 @@ class GameController(object):
     def changeDeck(self, deck):
         self.deck = deck
 
+    '''
     def initGame(self):
         for player in self.players:
             # Add 3 cards per player in each box
@@ -25,6 +27,7 @@ class GameController(object):
                 player.setTable(self.deck.pop())
                 player.setHiddenCard(self.deck.pop())
         self.turnOwner = self.players[0]
+    '''
 
     def changeOrder(self):
         self.order = not self.order
@@ -51,14 +54,14 @@ class GameController(object):
         self.cardOnTop = None
 
     def haveCards(self):
-        return len(self.deck) > 0
+        return self.deck.len() > 0
 
     def burn(self):
         self.cardStack = []
         self.cardOnTop = None
 
     def drawCards(self, player):
-        while (len(self.deck) > 0 and player.getHandLen() < 3):
+        while (self.haveCards() and player.getHandLen() < 3):
             player.setHand(self.deck.pop())
 
     def getTurnOwner(self):
@@ -69,6 +72,11 @@ class GameController(object):
 
     def getPlayers(self):
         return self.players
+
+    def getPlayerById(self, id):
+        for player in self.players:
+            if player.getId() = id:
+                return player
 
     def getPlen(self):
         return len(self.players)
@@ -128,7 +136,8 @@ class GameController(object):
             # have no cards
             self.getAllFromStack(player)
             self.endTurn(player)
-        elif (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getTableLen == 0):
+
+        if (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getTableLen == 0):
             if (player.getHidden()[cardValue % 10 - 1].isValidWith(self.getCardOnTop().getValue())):
                 self.setCardOnTop(
                     player, player.popCardFromHidden(cardValue % 10 - 1))
@@ -139,6 +148,10 @@ class GameController(object):
                 player.setHand(player.popCardFromHidden(cardValue % 10 - 1))
                 self.getAllFromStack(player)
                 self.endTurn(player)
+
+    def takeAll(self, player):
+        self.getAllFromStack()
+        self.endTurn(player)
 
     def returnPlayer_Order(self, player, skip=0):
         return self.players[(self.indexP(

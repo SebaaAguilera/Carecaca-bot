@@ -10,13 +10,14 @@ JK = 30
 
 # Test without flash
 
-dck = sortedDeck()
+dck = Deck(True)
+print(dck.len())
 
 
 def popCard(deck, cardValue):
-    for i in range(0, 106):
-        if cardValue == deck[i].getValue():
-            return deck.pop(i)
+    for i in range(0, 108):
+        if cardValue == deck.get(i).getValue():
+            return deck.pop(i), print("pop para los h " + str(dck.len()))
 
 
 def returnList(deck, cardList):
@@ -50,7 +51,24 @@ for player in ctr.getPlayers():
     # Add 3 cards per player in each box
     while(len(player.getTable()) < 3):
         player.setTable(dck.pop())
+        print(dck.len())
         player.setHiddenCard(dck.pop())
+        print(dck.len())
+
+
+print([i.getValue() for i in p0.getHand()])
+print([i.getValue() for i in p0.getTable()])
+print([i.getValue() for i in p0.getHidden()])
+print([i.getValue() for i in p1.getHand()])
+print([i.getValue() for i in p1.getTable()])
+print([i.getValue() for i in p1.getHidden()])
+print([i.getValue() for i in p2.getHand()])
+print([i.getValue() for i in p2.getTable()])
+print([i.getValue() for i in p2.getHidden()])
+print([i.getValue() for i in p3.getHand()])
+print([i.getValue() for i in p3.getTable()])
+print([i.getValue() for i in p3.getHidden()])
+
 
 # set initial turnOwner
 ctr.setTurnOwner(p0)
@@ -64,8 +82,5 @@ assert ctr.getTurnOwner().getId() == p0.getId()
 # p0 cant put a card from the hiddenTable
 hiddenCard = p0.getTable()[0]
 ctr.putCardFromHidden(p0, 11)  # 11%10-1=0
-print([i.getValue() for i in p0.getHand()])
-print([i.getValue() for i in p0.getTable()])
-print([i.getValue() for i in p0.getHidden()])
 assert hiddenCard in p0.getHidden()
 assert ctr.getTurnOwner().getId() == p0.getId()
