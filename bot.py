@@ -207,5 +207,9 @@ async def emoji(ctx):
 
     await ctx.send('Room was delete')
 
+@bot.command(name="hi", help="Say Hi to CareCaca bot!")
+async def hi(ctx):
+    await ctx.send(f'Hi {ctx.message.author.name}, nice to meet you! :heart:')
+
 
 bot.run(TOKEN)
