@@ -25,7 +25,7 @@ class ImgDisplay(object):
             playerInfo.append(
                 [
                     self.cardsDisplay(player.getHand()),
-                    self.cardsDisplay(player.getTable()),
+                    self.cardsDisplay(player.getvisible()),
                     self.cardsDisplay(player.getHiddenCards(), False)
                 ]
             )
@@ -83,18 +83,18 @@ class ImgDisplay(object):
         else:
             return "purple_back.png"
 
-    def tableCards(self, info):
+    def visibleCards(self, info):
         plCards = []
         for i in range(0, self.controller.getPlen()):
             p = info[i]
-            lenTable = len(p[1])
+            lenVisible = len(p[1])
             lenHidden = len(p[2])
-            m = max(lenTable, lenHidden)
+            m = max(lenVisible, lenHidden)
             fs = []
             for j in range(0, 2*m):
-                if j <= lenTable:
+                if j <= lenVisible:
                     im = Image.open(p[1][j], 'r')
-                elif lenTable < j < m:
+                elif lenVisible < j < m:
                     im = Image.open("PNG/gray_back.png", 'r')
                 elif m <= j < lenHidden:
                     im = Image.open(p[2][j], 'r')
@@ -137,7 +137,7 @@ class ImgDisplay(object):
             plCards.append(cvs)
         return plCards
 
-    def middleCards(self):
+    def tableCards(self):
         fs = []
         im = Image.open(self.cardDisplay(self.controller.getCardOnTop()), 'r')
         fs.append(im)
@@ -157,21 +157,21 @@ class ImgDisplay(object):
 
     def outputDisplay(self):
         info = self.getPlayersDisplay()
-        tableC = self.tableCards(info)
+        visibleC = self.visibleCards(info)
         handC = self.handCards(info)
-        middle = self.middleCards()
+        table = self.tableCards()
         players = self.controller.getPlayers()
         for i in range(0, self.controller.getPlen()):
             for j in range(0, self.controller.getPlen()):
                 if i != j:
                     # send name of the cards owner bot.message(players[j].getId() + "'s cards:")
-                    # send an image with the cards bot.img(tableC[j])
+                    # send an image with the cards bot.img(visibleC[j])
                     # someHow we'll have to upload the image to discord itself and then send them to the players
                     caca = "uwu"
-            # send a msg bot.msg("Cards on the table")
-            # send the cards in the middle of the table bot.img(middle)
+            # send a msg bot.msg("Cards on the visible")
+            # send the cards in the middle of the visible bot.img(middle)
             # send name of the cards owner bot.message("Your cards:")
-            # send an image with the cards in the table bot.img(tableC[i])
+            # send an image with the cards in the visible bot.img(visible[i])
             # send an image with the cards in the hand bot.img(hand[i])
 
 

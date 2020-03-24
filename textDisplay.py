@@ -18,7 +18,7 @@ class TextDisplay(object):
             playerInfo.append(
                 [player.getId() + "\n",
                  self.cardsDisplay(player.getHand()),
-                 self.cardsDisplay(player.getTable()),
+                 self.cardsDisplay(player.getVisible()),
                  self.cardsDisplay(player.getHiddenCards(), False)
                  ]
             )

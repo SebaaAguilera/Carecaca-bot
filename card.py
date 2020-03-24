@@ -52,38 +52,3 @@ class Card(object):
             return "takeAll"
         else:
             return None
-
-    # dispay card
-
-
-def deck():
-    dck = []
-    for i in range(0, 3):
-        dck.append(Card(JK, "all"))
-    for k in range(0, 2):
-        for i in range(0, 4):
-            if (i == 0):
-                suit = "Pica"
-            elif (i == 1):
-                suit = "Clover"
-            elif (i == 2):
-                suit = "Heart"
-            elif (i == 3):
-                suit = "Diamond"
-            for j in range(1, 14):
-                if (j == 1):
-                    dck.append(Card(A, suit))
-                elif (j == 11):
-                    dck.append(Card(J, suit))
-                elif (j == 12):
-                    dck.append(Card(Q, suit))
-                elif (j == 13):
-                    dck.append(Card(K, suit))
-                else:
-                    dck.append(Card(j, suit))
-    return dck
-
-
-def sortedDeck(d=deck()):
-    shuffle(d)
-    return d

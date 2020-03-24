@@ -18,16 +18,14 @@ class GameController(object):
     def changeDeck(self, deck):
         self.deck = deck
 
-    '''
     def initGame(self):
         for player in self.players:
             # Add 3 cards per player in each box
             while(len(player.getHand()) < 3):
                 player.setHand(self.deck.pop())
-                player.setTable(self.deck.pop())
+                player.setVisible(self.deck.pop())
                 player.setHiddenCard(self.deck.pop())
         self.turnOwner = self.players[0]
-    '''
 
     def changeOrder(self):
         self.order = not self.order
@@ -107,7 +105,7 @@ class GameController(object):
                         if hand:
                             card = player.popCardFromHand(cardValue)
                         else:
-                            card = player.popCardFromTable(cardValue)
+                            card = player.popCardFromVisible(cardValue)
                         self.setCardOnTop(player, card)
                         if (not self.addCounter(player, cardValue)):
                             self.endTurnEffects(player)
@@ -126,8 +124,8 @@ class GameController(object):
         self.putCardAbstract(player, cardValue, player.hasInHand(cardValue))
 
     # command !t (card value)
-    def putCardFromTable(self, player, cardValue):
-        self.putCardAbstract(player, cardValue, player.hasInTable(
+    def putCardFromVisible(self, player, cardValue):
+        self.putCardAbstract(player, cardValue, player.hasInVisible(
             cardValue), player.getHandLen() == 0, False)
 
     # command !h (card number)
@@ -137,7 +135,7 @@ class GameController(object):
             self.getAllFromStack(player)
             self.endTurn(player)
 
-        if (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getTableLen == 0):
+        if (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getVisibleLen == 0):
             if (player.getHidden()[cardValue % 10 - 1].isValidWith(self.getCardOnTop().getValue())):
                 self.setCardOnTop(
                     player, player.popCardFromHidden(cardValue % 10 - 1))

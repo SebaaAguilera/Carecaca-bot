@@ -2,10 +2,10 @@ from card import *
 
 
 class Player(object):
-    def __init__(self, id, hand=[], table=[], hiddenTable=[]):
+    def __init__(self, id, hand=[], visible=[], hiddenTable=[]):
         self.id = id
         self.hand = hand
-        self.table = table
+        self.visible = visible
         self.hiddenTable = hiddenTable
 
     def getId(self):
@@ -38,25 +38,25 @@ class Player(object):
             if card == self.hand[i].getValue():
                 return self.hand.pop(i)
 
-    def hasInTable(self, card):
-        for i in range(0, len(self.table)):
-            if card == self.table[i].getValue():
+    def hasInVisible(self, card):
+        for i in range(0, len(self.visible)):
+            if card == self.visible[i].getValue():
                 return True
         return False
 
-    def setTable(self, card):
-        self.table.append(card)
+    def setVisible(self, card):
+        self.visible.append(card)
 
-    def getTable(self):
-        return self.table
+    def getVisible(self):
+        return self.visible
 
-    def getTableLen(self):
-        return len(self.table)
+    def getVisibleLen(self):
+        return len(self.visible)
 
-    def popCardFromTable(self, card):
-        for i in range(0, len(self.table)):
-            if card == self.table[i].getValue():
-                return self.table.pop(i)
+    def popCardFromVisible(self, card):
+        for i in range(0, len(self.visible)):
+            if card == self.visible[i].getValue():
+                return self.visible.pop(i)
 
     def hasInHidden(self, card):
         for i in range(0, len(self.hiddenTable)):
@@ -79,4 +79,4 @@ class Player(object):
                 return self.hiddenTable.pop(i)
 
     def hasNoCards(self):
-        return self.getHandLen == 0 and self.getTableLen() == 0 and self.getHiddenLen() == 0
+        return self.getHandLen == 0 and self.getVisibleLen() == 0 and self.getHiddenLen() == 0

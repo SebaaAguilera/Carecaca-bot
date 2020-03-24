@@ -17,10 +17,15 @@ class Deck(object):
     def get(self, index):
         return self.deck[index]
 
+    def popCardByValue(self, cardValue):
+        for i in range(0, 108):
+            if cardValue == self.get(i).getValue():
+                # , print("pop para los h " + str(dck.len()))
+                return self.pop(i)
+
     def initDeck(self):
-        dck = []
         for i in range(0, 4):
-            dck.append(Card(JK, "all"))
+            self.deck.append(Card(JK, "all"))
         for k in range(0, 2):
             for i in range(0, 4):
                 if (i == 0):
@@ -33,16 +38,15 @@ class Deck(object):
                     suit = "Diamond"
                 for j in range(1, 14):
                     if (j == 1):
-                        dck.append(Card(A, suit))
+                        self.deck.append(Card(A, suit))
                     elif (j == 11):
-                        dck.append(Card(J, suit))
+                        self.deck.append(Card(J, suit))
                     elif (j == 12):
-                        dck.append(Card(Q, suit))
+                        self.deck.append(Card(Q, suit))
                     elif (j == 13):
-                        dck.append(Card(K, suit))
+                        self.deck.append(Card(K, suit))
                     else:
-                        dck.append(Card(j, suit))
-        self.deck = dck
+                        self.deck.append(Card(j, suit))
 
     def sortDeck(self):
         shuffle(self.deck)
