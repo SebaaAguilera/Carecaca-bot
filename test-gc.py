@@ -14,10 +14,10 @@ JK = 30
 dck = Deck(True)
 
 # setHands
-h0 = dck.popAListByValues([6, JK, A])
+h0 = dck.popAListByValues([6, 7, 8])
 h1 = dck.popAListByValues([6, 10, J])
-h2 = dck.popAListByValues([6, 7, 8])
-h3 = dck.popAListByValues([6, 7, 2])
+h2 = dck.popAListByValues([6, 2, JK])
+h3 = dck.popAListByValues([6, 7, A])
 
 
 # setPlayers
@@ -33,7 +33,9 @@ p3.setManyCardsToHand(h3)
 pl = [p0, p1, p2, p3]
 
 # setGameController
-ctr = GameController(pl, False)
+ctr = GameController()
+for p in pl:
+    ctr.setPlayer(p)
 ctr.changeDeck(dck)
 
 # set visible and hidden visibleCards
@@ -90,22 +92,43 @@ assert p3.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p3.getId()
 assert ctr.getCounter() == 0
 assert ctr.getCardOnTop() is None
+assert len(ctr.getStack()) == 0
 
-"""
+
 # p3 put a 7
 handCard = p3.getHand()[0]
-ctr.putCardFromHand(p3, 6)
+ctr.putCardFromHand(p3, 7)
 assert handCard not in p3.getHand()
 assert p3.getHandLen() == 3
-assert ctr.getTurnOwner().getId() == p3.getId()
+assert ctr.getTurnOwner().getId() == p0.getId()
 assert ctr.getCounter() == 1
 
 # i'll assume p0 have no useful cards
-handCard = p3.getHand()[0]
 ctr.takeAll(p0)
-assert handCard not in p3.getHand()
-assert p3.getHandLen() == 3
-assert ctr.getTurnOwner().getId() == p3.getId()
-assert ctr.getCounter() == 0"""
+assert handCard in p0.getHand()
+assert p0.getHandLen() == 4
+assert ctr.getTurnOwner().getId() == p1.getId()
+assert ctr.getCounter() == 0
+assert ctr.getCardOnTop() is None
+
+# p1 play a 10 burn the card and play again
+handCard = p1.getHand()[0]
+ctr.putCardFromHand(p1, 10)
+assert handCard not in p1.getHand()
+assert p1.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p1.getId()
+assert ctr.getCounter() == 0
+assert ctr.getCardOnTop() is None
+assert len(ctr.getStack()) == 0
+
+# p1 play J changing the
+handCard = p1.getHand()[0]
+ctr.putCardFromHand(p1, J)
+assert handCard not in p1.getHand()
+assert p1.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p0.getId()
+assert ctr.getCounter() == 1
+assert ctr.getOrder() == False
+
 
 print("Finished!")

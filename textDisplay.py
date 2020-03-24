@@ -16,7 +16,7 @@ class TextDisplay(object):
         for i in range(0, numOfPlayers):
             player = players[i]
             playerInfo.append(
-                [player.getId() + "\n",
+                [player.getId(),
                  self.cardsDisplay(player.getHand()),
                  self.cardsDisplay(player.getVisible()),
                  self.cardsDisplay(player.getHiddenCards(), False)
@@ -72,11 +72,12 @@ class TextDisplay(object):
         for i in range(0, self.controller.getPlen()):
             for j in range(0, self.controller.getPlen()):
                 if (i != j):
-                    dpls_per_player += plInfo[j][0] + \
+                    dpls_per_player += "<b>" + plInfo[j][0] + "'s cards </b>" + \
                         plInfo[j][2] + plInfo[j][3] + "\n\n"
-            dpls_per_player += "The trun owner is: " + turnOwner + "\n\n"
-            dpls_per_player += "Card on Top: " + self.controller.getCardOnTop() + "\n"
-            dpls_per_player += "Are cards to draw? " + self.controller.haveCards() + "\n\n"
-            dpls_per_player += "YourCards: \n"
-            dpls_per_player += plInfo[i][0] + \
-                plInfo[i][1] + plInfo[i][2] + plInfo[i][3]
+            dpls_per_player += "<b> The turn owner is: __" + turnOwner + "__</b>  \n\n"
+            dpls_per_player += "<b> Card on Top: </b>" + self.controller.getCardOnTop() + \
+                "\n"
+            dpls_per_player += "<b> Any cards to draw? " + \
+                self.controller.haveCards() + "</b> \n\n"
+            dpls_per_player += "<b>YourCards: </b>\n"
+            dpls_per_player += plInfo[i][1] + plInfo[i][2] + plInfo[i][3]

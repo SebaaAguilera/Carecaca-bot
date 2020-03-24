@@ -76,7 +76,7 @@ class GameController(object):
 
     def invalidMove(self, player):
         self.getAllFromStack(player)
-        self.addCounter(player)
+        self.addCounter()
 
     def haveCards(self):
         return self.deck.len() > 0
@@ -109,11 +109,11 @@ class GameController(object):
     def indexP(self, player):
         return self.players.index(player)
 
-    def addCounter(self, player, cardValue=0):
+    def addCounter(self, cardValue=0):
         if cardValue==0:
             self.counter = 0
-        elif self.cardOnTop is None:
-            self.counter = 1
+            #elif self.cardOnTop is None:
+            #    self.counter = 1
             return False
         elif (cardValue == self.cardOnTop.getValue()):
             self.counter += 1
@@ -139,7 +139,7 @@ class GameController(object):
                         else:
                             card = player.popCardFromVisible(cardValue)
                         self.setCardOnTop(player, card)
-                        if (not self.addCounter(player, cardValue)):
+                        if (not self.addCounter( cardValue)):
                             self.endTurnEffects(player)
                 # if he/she don't own the card: do nothing
             # not valid player
@@ -165,7 +165,7 @@ class GameController(object):
             if (player.getHidden()[cardValue - 1].isValidWith(self.getCardOnTop().getValue())):
                 self.setCardOnTop(
                     player, player.popCardFromHidden(cardValue - 1))
-                if (not self.addCounter(player, cardValue)):
+                if (not self.addCounter(cardValue)):
                     self.endTurnEffects(player)
             else:
                 # wrong card, take all
@@ -198,6 +198,7 @@ class GameController(object):
             self.endTurn(1)
         elif (effect == "burn"):
             self.burn()
+            self.addCounter()
         elif (effect == "changeOrder"):
             self.changeOrder()
             self.endTurn(player)
