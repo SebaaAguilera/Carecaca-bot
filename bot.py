@@ -102,15 +102,15 @@ async def add_role_to_player(ctx, role, member):
     print(f'Adding role: {role.name} to {member.name}')
     await member.add_roles(role)
     print(f'Role {role.name} has been asigment to {member.name}')
-    await asign_member_to_object_player(role)
+    await asign_member_to_object_player(member)
 
 
 # assign_member_to_object_player
 # role: discord.Role obj
 # Connect Player objecto to Member with Role Member.
-async def asign_member_to_object_player(role):
-    pl = player.Player(role.name)
-    print(f'Object player {pl.getId()} has been assigned to {role.name}')
+async def asign_member_to_object_player(member):
+    pl = player.Player(member.name)
+    print(f'Object player {pl.getId()} has been assigned to {member.name}')
     gameController.setPlayer(pl)
 
 
@@ -228,6 +228,9 @@ async def startGame(ctx, *args):
 
     print(gameController.getPlayers()) # todo bien
     gameController.initGame()
+
+    display = td.TextDisplay(gameController).outPutTextDisplay()
+    print(display)
         
 
 @bot.command(name="end-game", help="End a CareCaca game")
@@ -286,7 +289,7 @@ async def p(ctx, *, args):
     display = td.textDisplay(gameController)
 
     if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.role.name)
+        player = gameController.getPlayerById(ctx.message.author.name)
         cardOnTop = gameController.getCardOnTop()
         turnOwner = gameController.getTurnOwner()
         gameController.putCardFromHand(player, args)
@@ -302,7 +305,7 @@ async def t(ctx, *, args):
     display = td.textDisplay(gameController)
     
     if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.role.name)
+        player = gameController.getPlayerById(ctx.message.author.name)
         cardOnTop = gameController.getCardOnTop()
         turnOwner = gameController.getTurnOwner()
         gameController.putCardFromHand(player, args)
@@ -318,7 +321,7 @@ async def h(ctx, *, args):
     display = td.textDisplay(gameController)
     
     if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.role.name)
+        player = gameController.getPlayerById(ctx.message.author.name)
         cardOnTop = gameController.getCardOnTop()
         turnOwner = gameController.getTurnOwner()
         gameController.putCardFromHand(player, args)
@@ -333,7 +336,7 @@ async def h(ctx, *, args):
 @bot.command(name="n")
 async def n(ctx):
     if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.role.name)
+        player = gameController.getPlayerById(ctx.message.author.name)
         gameController.takeAll(player)
 
 
