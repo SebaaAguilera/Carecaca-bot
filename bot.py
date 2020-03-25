@@ -232,7 +232,7 @@ async def startGame(ctx, *args):
     main_category = await guild.create_category_channel("Players")
 
     # Get the people in a voice channel
-    voice_channel = ctx.message.author.voice.voice_channel
+    voice_channel = ctx.message.author.voice.channel
     members = voice_channel.members
 
     """
@@ -288,7 +288,7 @@ async def endGame(ctx):
     category = discord.utils.get(guild.categories, name="Players")
 
     # Get the people in a voice channel
-    voice_channel = ctx.message.author.voice.voice_channel
+    voice_channel = ctx.message.author.voice.channel
     members = voice_channel.members
 
     # Deleting Roles
