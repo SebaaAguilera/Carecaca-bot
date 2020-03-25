@@ -265,18 +265,7 @@ async def startGame(ctx, *args):
     await ctx.send('', embed=e)
 
     gameController.initGame()
-    msgStatus(ctx)
-
-    """
-    display = td.TextDisplay(gameController)
-    categories = guild.categories
-    channels = []
-    message = display.outPutTextDisplay()
-    for category in categories:
-        if category.name == "Players":
-            channels = category.channels
-    for i in range(len(message)):
-        await channels[i].send(f'{message[i]}')"""
+    await msgStatus(ctx)
 
 
 @bot.command(name="end-game", help="End a CareCaca game")
@@ -341,21 +330,9 @@ async def get_players(ctx):
 
 async def requestCtr(ctx, functionCall):
     if (functionCall):  # aqui llegaria el putBlablabla
-        msgStatus(ctx)
-        """
-        guild = ctx.guild
-        display = td.TextDisplay(gameController
-        categories = guild.categories
-        channels = []
-        message = display.outPutTextDisplay()
-        for category in categories:
-            if category.name == "Players":
-                channels = category.channels"""
+        await msgStatus(ctx)
     else:
-        ctx.send(":x: UwU Algo pasa`")
-    """
-    for i in range(len(message)):
-        await channels[i].send(f'{message[i]}')"""
+        await ctx.send(":x: UwU Algo pasa`")
 
 
 # !p <cardNumber>
@@ -364,23 +341,9 @@ async def requestCtr(ctx, functionCall):
 async def p(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        requestCtr(ctx, gameController.putCardFromHand(player, valor(args)))
-        """
-        guild = ctx.guild
-        display = td.TextDisplay(gameController)
-        if (gameController.putCardFromHand(player, valor(args))):
-            categories = guild.categories
-            channels = []
-            message = display.outPutTextDisplay()
-            for category in categories:
-                if category.name == "Players":
-                    channels = category.channels
-            for i in range(len(message)):
-                await channels[i].send(f'{message[i]}')
-        else:
-            await ctx.send('Si estoy aquí, tu wea ta mala')"""
+        await requestCtr(ctx, gameController.putCardFromHand(player, valor(args)))
     else:
-        ctx.send(
+        await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
@@ -388,22 +351,9 @@ async def p(ctx, *, args):
 async def t(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        requestCtr(ctx, gameController.putCardFromVisible(player, valor(args)))
-        """
-        guild = ctx.guild
-        display = td.TextDisplay(gameController)
-        if (gameController.putCardFromVisible(player, valor(args))):
-            categories = guild.categories
-            channels = []
-            message = display.outPutTextDisplay()
-            for category in categories:
-                if category.name == "Players":
-                    channels = category.channels
-
-            for i in range(len(message)):
-                await channels[i].send(f'{message[i]}')"""
+        await requestCtr(ctx, gameController.putCardFromVisible(player, valor(args)))
     else:
-        ctx.send(
+        await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
@@ -411,22 +361,9 @@ async def t(ctx, *, args):
 async def h(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        requestCtr(ctx, gameController.putCardFromHidden(player, valor(args)))
-        """
-        guild = ctx.guild
-        display = td.TextDisplay(gameController)
-        if (gameController.putCardFromHidden(player, valor(args))):
-            categories = guild.categories
-            channels = []
-            message = display.outPutTextDisplay()
-            for category in categories:
-                if category.name == "Players":
-                    channels = category.channels
-
-            for i in range(len(message)):
-                await channels[i].send(f'{message[i]}')"""
+        await requestCtr(ctx, gameController.putCardFromHidden(player, valor(args)))
     else:
-        ctx.send(
+        await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 # list
@@ -435,21 +372,9 @@ async def n(ctx):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
         gameController.takeAll(player)
-        msgStatus(ctx)
-        """
-        guild = ctx.guild
-        categories = guild.categories
-        channels = []
-        display = td.TextDisplay(gameController)
-        message = display.outPutTextDisplay()
-        for category in categories:
-            if category.name == "Players":
-                channels = category.channels
-
-        for i in range(len(message)):
-            await channels[i].send(f'{message[i]}')"""
+        await msgStatus(ctx)
     else:
-        ctx.send(
+        await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
