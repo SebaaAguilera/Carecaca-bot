@@ -58,20 +58,17 @@ async def on_member_join(member):
 
 @bot.event
 async def on_ready():
-
     print(f'{bot.user} has connected to Discord! \n')
-
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
-
     print(
         f'{bot.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
-
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
+
 
 # =============================================================================================
 # ====================================== Functions ============================================
@@ -187,7 +184,9 @@ async def set_permission_text_channel(ctx, channel_name, role_name, category):
 
 # General Commands
 
-#UWUUUUUUUUUUUUUu tampoco se si va a funcionar esto
+# UWUUUUUUUUUUUUUu tampoco se si va a funcionar esto
+
+
 async def msgStatus(ctx):
     guild = ctx.guild
     display = td.TextDisplay(gameController)
@@ -199,6 +198,7 @@ async def msgStatus(ctx):
             channels = category.channels
     for i in range(len(message)):
         await channels[i].send(f'{message[i]}')
+
 
 @bot.command(name="clear", help="Clear text channel")
 async def clear(ctx, amount=100):
@@ -225,20 +225,25 @@ async def startGame(ctx, *args):
 
     await ctx.send(f'{ctx.message.author.name} has started a Carecaca Game')
     await ctx.send("Preparing room...")
-    members = ctx.message.guild.members
+    #members = ctx.message.guild.members
     guild = ctx.guild
 
     # Text Channels will agrupate in category 'Players'
     main_category = await guild.create_category_channel("Players")
 
+    # Get the people in a voice channel
+    voice_channel = ctx.message.author.voice_channel
+    members = voice_channel.members
+
     # Creating roles and assigm them to Player
-    for i in range(len(members)):
-        if members[i].name == "Carecaca-bot":
+    for member in members:
+        if member.name == "Carecaca-bot":
             continue
-        if members[i].status != discord.Status.offline:
-            role_name = "player-" + str(i)
+        # if member.status != discord.Status.offline:
+        else:
+            role_name = "player-" + str(members.index(member))
             channel_name = role_name
-            await create_role(ctx, members[i], guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
+            await create_role(ctx, member, guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
             await manage_text_channel(ctx, channel_name, "add", main_category)
             await set_permission_text_channel(ctx, channel_name, role_name, main_category)
 
@@ -247,6 +252,7 @@ async def startGame(ctx, *args):
     await ctx.send('', embed=e)
 
     gameController.initGame()
+    msgStatus(ctx)
 
     """
     display = td.TextDisplay(gameController)
@@ -290,8 +296,6 @@ async def endGame(ctx):
 async def emoji(ctx):
     await ctx.send(':regional_indicator_a:')
 
-    await ctx.send('Room was delete')
-
 
 @bot.command(name="hi", help="Say Hi to CareCaca bot!")
 async def hi(ctx):
@@ -300,7 +304,7 @@ async def hi(ctx):
 
 @bot.command(name="get-players", help="Print currently players (???")
 async def get_players(ctx):
-    players = botHelper.getPlayers()
+    players = gameController.getPlayers()
     string = ""
     for player in players:
         string += player.getId() + "\n"
@@ -311,10 +315,12 @@ async def get_players(ctx):
 # ====================================== Game Commands ========================================
 # =============================================================================================
 
-# No cacho bien como funcionan las funciones acá, 
+# No cacho bien como funcionan las funciones acá,
 # Pero se podria colocar esta funcion en todos los comandos a excepcion de takeAll, no estoy eguro de como se haría en takeAll
-async def requestCtr(ctx,functionCall):
-    if (functionCall):  #### aqui llegaria el putBlablabla 
+
+
+async def requestCtr(ctx, functionCall):
+    if (functionCall):  # aqui llegaria el putBlablabla
         msgStatus(ctx)
         """
         guild = ctx.guild
@@ -325,7 +331,7 @@ async def requestCtr(ctx,functionCall):
         for category in categories:
             if category.name == "Players":
                 channels = category.channels"""
-    else: 
+    else:
         ctx.send(":x: UwU Algo pasa`")
     """
     for i in range(len(message)):
@@ -338,7 +344,7 @@ async def requestCtr(ctx,functionCall):
 async def p(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        requestCtr(ctx,gameController.putCardFromHand(player, valor(args)))
+        requestCtr(ctx, gameController.putCardFromHand(player, valor(args)))
         """
         guild = ctx.guild
         display = td.TextDisplay(gameController)
@@ -362,7 +368,7 @@ async def p(ctx, *, args):
 async def t(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        requestCtr(ctx,gameController.putCardFromVisible(player, valor(args)))
+        requestCtr(ctx, gameController.putCardFromVisible(player, valor(args)))
         """
         guild = ctx.guild
         display = td.TextDisplay(gameController)
@@ -385,7 +391,7 @@ async def t(ctx, *, args):
 async def h(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        requestCtr(ctx,gameController.putCardFromHidden(player, valor(args)))
+        requestCtr(ctx, gameController.putCardFromHidden(player, valor(args)))
         """
         guild = ctx.guild
         display = td.TextDisplay(gameController)
