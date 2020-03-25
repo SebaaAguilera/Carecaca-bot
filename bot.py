@@ -341,7 +341,7 @@ async def requestCtr(ctx, functionCall):
 async def p(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        await requestCtr(ctx, gameController.putCardFromHand(player, valor(args)))
+        await requestCtr(ctx, gameController.putCardFromHand(player, value(args)))
     else:
         await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
@@ -351,7 +351,7 @@ async def p(ctx, *, args):
 async def t(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        await requestCtr(ctx, gameController.putCardFromVisible(player, valor(args)))
+        await requestCtr(ctx, gameController.putCardFromVisible(player, value(args)))
     else:
         await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
@@ -361,7 +361,7 @@ async def t(ctx, *, args):
 async def h(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        await requestCtr(ctx, gameController.putCardFromHidden(player, valor(args)))
+        await requestCtr(ctx, gameController.putCardFromHidden(player, int(arg)))
     else:
         await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
