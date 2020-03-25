@@ -27,10 +27,10 @@ class GameController(object):
         self.flash = False
         self.counter = 0
 
-    def setPlayer(self,player):
+    def setPlayer(self, player):
         self.players.append(player)
-    
-    def setFlash(self,flash):
+
+    def setFlash(self, flash):
         self.flash = flash
 
     def initGame(self):
@@ -40,6 +40,16 @@ class GameController(object):
             player.setManyCardsToHidden(self.deck.popAListByLen(3))
         self.turnOwner = self.players[0]
         self.playing = True
+
+    def getStatus(self):
+        return [self.cardOnTop, self.turnOwner, self.order]
+
+    def compareStatus(self, prevStatus):
+        newSt = self.getStatus()
+        for st in newSt:
+            if st is not prevStatus[newSt.index(st)]:
+                return False
+        return True
 
     def changeDeck(self, deck):
         self.deck = deck
@@ -110,9 +120,9 @@ class GameController(object):
         return self.players.index(player)
 
     def addCounter(self, cardValue=0):
-        if cardValue==0:
+        if cardValue == 0:
             self.counter = 0
-            #elif self.cardOnTop is None:
+            # elif self.cardOnTop is None:
             #    self.counter = 1
             return False
         elif (cardValue == self.cardOnTop.getValue()):
@@ -129,6 +139,7 @@ class GameController(object):
         return self.counter
 
     def putCardAbstract(self, player, cardValue, hasInPlace, handOrEmptyHand=True, hand=True):
+        prevStatus = self.getStatus()
         if(self.getCardOnTop() == None or self.getCardOnTop().isValidWith(cardValue)):
             if(self.flash and cardValue == self.cardOnTop.getValue()) or player.equalId(self.turnOwner):
                 if hasInPlace:
@@ -139,7 +150,7 @@ class GameController(object):
                         else:
                             card = player.popCardFromVisible(cardValue)
                         self.setCardOnTop(player, card)
-                        if (not self.addCounter( cardValue)):
+                        if (not self.addCounter(cardValue)):
                             self.endTurnEffects(player)
                 # if he/she don't own the card: do nothing
             # not valid player
@@ -149,6 +160,7 @@ class GameController(object):
             # wrong card, take all the stack
             self.invalidMove(player)
             self.endTurn(player)
+        return self.compareStatus(prevStatus)
 
     # command !p (card number)
     def putCardFromHand(self, player, cardValue):
@@ -161,6 +173,7 @@ class GameController(object):
 
     # command !h (card number)
     def putCardFromHidden(self, player, cardValue):
+        prevStatus = self.getStatus()
         if (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getVisibleLen == 0):
             if (player.getHidden()[cardValue - 1].isValidWith(self.getCardOnTop().getValue())):
                 self.setCardOnTop(
@@ -172,6 +185,7 @@ class GameController(object):
                 player.setHand(player.popCardFromHidden(cardValue - 1))
                 self.invalidMove(player)
                 self.endTurn(player)
+        return self.compareStatus(prevStatus)
 
     # command !n
     def takeAll(self, player):
