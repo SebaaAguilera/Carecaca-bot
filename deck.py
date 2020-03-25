@@ -10,11 +10,6 @@ class Deck(object):
 
     def pop(self, index=-1):
         return self.deck.pop(index)
-        """
-        card = self.get(index)
-        self.deck.remove(card)
-        return card
-        """
 
     def len(self):
         return len(self.deck)

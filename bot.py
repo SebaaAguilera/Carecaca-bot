@@ -329,6 +329,7 @@ async def get_players(ctx):
 
 
 async def requestCtr(ctx, functionCall):
+    asyncio.sleep(1)
     if (functionCall):  # aqui llegaria el putBlablabla
         await msgStatus(ctx)
     else:
@@ -361,7 +362,7 @@ async def t(ctx, *, args):
 async def h(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
-        await requestCtr(ctx, gameController.putCardFromHidden(player, int(arg)))
+        await requestCtr(ctx, gameController.putCardFromHidden(player, int(args)))
     else:
         await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")

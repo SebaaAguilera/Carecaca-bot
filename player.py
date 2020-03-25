@@ -62,9 +62,9 @@ class Player(object):
             if card == self.visible[i].getValue():
                 return self.visible.pop(i)
 
-    def hasInHidden(self, card):
+    def hasInHidden(self, cardValue):
         for i in range(0, len(self.hiddenTable)):
-            if card == self.hiddenTable[i].getValue():
+            if cardValue == self.hiddenTable[i].getValue():
                 return True
         return False
 
@@ -88,3 +88,4 @@ class Player(object):
 
     def hasNoCards(self):
         return self.getHandLen == 0 and self.getVisibleLen() == 0 and self.getHiddenLen() == 0
+
