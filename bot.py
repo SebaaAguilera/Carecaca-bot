@@ -396,7 +396,7 @@ async def carecaca(ctx):
 
 
 # adefecio
-def valor(arg):
+def value(arg):
     if arg in ["a", "A"]:
         return 20
     elif arg in ["j", "J"]:
@@ -408,7 +408,7 @@ def valor(arg):
     elif arg in ["jk", "JK", "joker", "Joker"]:
         return 30
     else:
-        return arg
+        return int(arg)
 
 
 bot.run(TOKEN)
