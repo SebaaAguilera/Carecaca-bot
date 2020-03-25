@@ -311,7 +311,7 @@ def sendMsgToCtr(ctx,functionCall):
         for category in categories:
             if category.name == "Players":
                 channels = category.channels
-    ctx.send(
+    else: ctx.send(
             ":x: UwU Algo pasa`")
 
         for i in range(len(message)):
