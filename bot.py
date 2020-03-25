@@ -298,6 +298,26 @@ async def get_players(ctx):
 # ====================================== Game Commands ========================================
 # =============================================================================================
 
+# No cacho bien como funcionan las funciones acá, 
+# Pero se podria colocar esta funcion en todos los comandos a excepcion de takeAll, no estoy eguro de como se haría en takeAll
+# Pero iria en el if the gc.playing, despues de instanciar al player, reemplazando todo lo demás
+def sendMsgToCtr(ctx,functionCall):
+    guild = ctx.guild
+    display = td.TextDisplay(gameController)
+    if (functionCall):  #### aqui llegaria el putBlablabla 
+        categories = guild.categories
+        channels = []
+        message = display.outPutTextDisplay()
+        for category in categories:
+            if category.name == "Players":
+                channels = category.channels
+    ctx.send(
+            ":x: UwU Algo pasa`")
+
+        for i in range(len(message)):
+            await channels[i].send(f'{message[i]}')
+
+
 # !p <cardNumber>
 #
 @bot.command(name="p")
@@ -342,11 +362,6 @@ async def t(ctx, *, args):
         guild = ctx.guild
         player = gameController.getPlayerById(ctx.message.author.name)
         display = td.TextDisplay(gameController)
-        """
-        cardOnTop = gameController.getCardOnTop()
-        turnOwner = gameController.getTurnOwner()
-        gameController.putCardFromHand(player, valor(args))
-        if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():"""
         if (gameController.putCardFromVisible(player, valor(args))):
             categories = guild.categories
             channels = []
