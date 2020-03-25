@@ -347,7 +347,7 @@ async def t(ctx, *, args):
         turnOwner = gameController.getTurnOwner()
         gameController.putCardFromHand(player, valor(args))
         if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():"""
-        if (gameController.putCardFromHand(player, valor(args))):
+        if (gameController.putCardFromVisible(player, valor(args))):
             categories = guild.categories
             channels = []
             message = display.outPutTextDisplay()
@@ -369,12 +369,7 @@ async def h(ctx, *, args):
         guild = ctx.guild
         player = gameController.getPlayerById(ctx.message.author.name)
         display = td.TextDisplay(gameController)
-        """
-        cardOnTop = gameController.getCardOnTop()
-        turnOwner = gameController.getTurnOwner()
-        gameController.putCardFromHand(player, valor(args))
-        if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():"""
-        if (gameController.putCardFromHand(player, valor(args))):
+        if (gameController.putCardFromHidden(player, valor(args))):
             categories = guild.categories
             channels = []
             message = display.outPutTextDisplay()
