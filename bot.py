@@ -225,15 +225,26 @@ async def startGame(ctx, *args):
 
     await ctx.send(f'{ctx.message.author.name} has started a Carecaca Game')
     await ctx.send("Preparing room...")
-    #members = ctx.message.guild.members
+    # members = ctx.message.guild.members
     guild = ctx.guild
 
     # Text Channels will agrupate in category 'Players'
     main_category = await guild.create_category_channel("Players")
 
     # Get the people in a voice channel
-    voice_channel = ctx.message.author.voice_channel
+    voice_channel = ctx.message.author.voice.voice_channel
     members = voice_channel.members
+
+    """
+    # First, get the server from one of the following:
+    for server in bot.servers:
+        if server.name == "Server name":
+            break
+
+    # Second, get the channel  
+    for channel in server.channels:
+        if channel.name == "General":
+            members = channel.members"""
 
     # Creating roles and assigm them to Player
     index = 0
@@ -273,19 +284,19 @@ async def endGame(ctx):
     await ctx.send(f'{ctx.message.author.name} has ended the game')
     await ctx.send('Deleting room...')
     guild = ctx.guild
-    #members = ctx.message.guild.members
+    # members = ctx.message.guild.members
     category = discord.utils.get(guild.categories, name="Players")
 
     # Get the people in a voice channel
-    voice_channel = ctx.message.author.voice_channel
+    voice_channel = ctx.message.author.voice.voice_channel
     members = voice_channel.members
 
     # Deleting Roles
     index = 0
-    for member in members):
+    for member in members:
         if member.name == "Carecaca-bot":
             continue
-        #if member.status != discord.Status.offline:
+        # if member.status != discord.Status.offline:
         else:
             index += 1
             role_name = "player-" + str(index)
