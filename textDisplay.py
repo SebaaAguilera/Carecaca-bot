@@ -19,7 +19,7 @@ class TextDisplay(object):
                 [player.getId(),
                  self.cardsDisplay(player.getHand()),
                  self.cardsDisplay(player.getVisible()),
-                 self.cardsDisplay(player.getHidden, False)
+                 self.cardsDisplay(player.getHidden(), False)
                  ]
             )
         return playerInfo
@@ -60,9 +60,9 @@ class TextDisplay(object):
             elif (value == K):
                 return ":regional_indicator_k:"
             elif (value == JK):
-                return ":black_jocker:"
+                return ":black_joker:"
         else:
-            return ":blue_book:"
+            return ":blue_square:"
 
     def auxCardOnTop(self, card):
         if card is None:
@@ -74,17 +74,21 @@ class TextDisplay(object):
     def outPutTextDisplay(self):
         plInfo = self.getPlayersDisplay()
         turnOwner = self.controller.getTurnOwner().getId()
-        dpls_per_player = ""
+        dpls_per_player = []
+        for i in range(0, self.controller.getPlen()):
+            dpls_per_player.append("\n")
         for i in range(0, self.controller.getPlen()):
             for j in range(0, self.controller.getPlen()):
                 if (i != j):
-                    dpls_per_player += "<b>" + plInfo[j][0] + "'s cards </b>" + \
+                    dpls_per_player[i] += "\n **" + plInfo[j][0] + "'s cards: ** \n" + \
                         plInfo[j][2] + plInfo[j][3] + "\n\n"
-            dpls_per_player += "<b> The turn owner is: __" + turnOwner + "__</b>  \n\n"
-            dpls_per_player += "<b> Card on Top: </b>" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
+            dpls_per_player[i] += "** The turn owner is: __" + turnOwner + "__** \n\n"
+            dpls_per_player[i] += "** Card on Top: **" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
                 "\n"
-            dpls_per_player += "<b> Any cards to draw? " + \
-                str(self.controller.haveCards()) + "</b> \n\n"
-            dpls_per_player += "<b>YourCards: </b>\n"
-            dpls_per_player += plInfo[i][1] + plInfo[i][2] + plInfo[i][3]
+            dpls_per_player[i] += "** Any cards to draw? " + \
+                str(self.controller.haveCards()) + "** \n\n"
+            dpls_per_player[i] += "** Your Cards: **\n"
+            dpls_per_player[i] += "** Hand Cards: ** \n" + plInfo[i][1]
+            dpls_per_player[i] += "** Table Cards: ** \n" + plInfo[i][2] + plInfo[i][3]
+
         return dpls_per_player

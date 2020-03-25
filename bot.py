@@ -3,6 +3,7 @@
 # System
 import os
 import asyncio
+import time
 
 
 # Discord
@@ -33,7 +34,7 @@ bot = commands.Bot(command_prefix='!')
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename='discord-log.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
     
@@ -224,13 +225,18 @@ async def startGame(ctx, *args):
     e = discord.Embed(title=':white_check_mark: Room is ready, please join to your Text Channel', colour=discord.Colour(0x09c48c))
     await ctx.send('', embed=e)
 
-    
-
-    print(gameController.getPlayers()) # todo bien
     gameController.initGame()
 
     display = td.TextDisplay(gameController).outPutTextDisplay()
-    print(display)
+    categories = guild.categories
+    channels = []
+    for category in categories:
+        if category.name == "Players":
+            channels = category.channels
+    
+    for i in range(len(display)):
+        await channels[i].send(f'{display[i]}')
+                
         
 
 @bot.command(name="end-game", help="End a CareCaca game")
@@ -286,48 +292,77 @@ async def get_players(ctx):
 # 
 @bot.command(name="p")
 async def p(ctx, *, args):
-    display = td.textDisplay(gameController)
-
     if gameController.playing:
+        guild = ctx.guild
         player = gameController.getPlayerById(ctx.message.author.name)
         cardOnTop = gameController.getCardOnTop()
         turnOwner = gameController.getTurnOwner()
-        gameController.putCardFromHand(player, args)
+        gameController.putCardFromHand(player, valor(args))
+        display = td.TextDisplay(gameController)
+        print(cardOnTop is not gameController.getCardOnTop())
+        print(f'Dueño del Turno: {gameController.getTurnOwner().getId()}')
+        print(f'Valor turnOwner: {turnOwner.getId()}')
+        print(turnOwner is not gameController.getTurnOwner())
         if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():
-            # Oye no es tu turno, sapo qlo || 
-            pass
+            categories = guild.categories
+            channels = []
+            message = display.outPutTextDisplay()
+            for category in categories:
+                if category.name == "Players":
+                    channels = category.channels
+            print(channels)
+            print("")
+            print(message)
+            for i in range(len(message)):
+                await channels[i].send(f'{message[i]}')
+        else:
+            await ctx.send('Si estoy aquí, tu wea ta mala')
             
     else:
         ctx.send(":x: Nobody are playing now. If you want to start a game, use ``!start-game``")
 
 @bot.command(name="t")
 async def t(ctx, *, args):
-    display = td.textDisplay(gameController)
-    
     if gameController.playing:
+        guild = ctx.guild
         player = gameController.getPlayerById(ctx.message.author.name)
         cardOnTop = gameController.getCardOnTop()
         turnOwner = gameController.getTurnOwner()
-        gameController.putCardFromHand(player, args)
+        gameController.putCardFromHand(player, valor(args))
+        display = td.TextDisplay(gameController)
         if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():
-            # Oye no es tu turno, sapo qlo || 
-            pass
+            categories = guild.categories
+            channels = []
+            message = display.outPutTextDisplay()
+            for category in categories:
+                if category.name == "Players":
+                    channels = category.channels
+            
+            for i in range(len(message)):
+                await channels[i].send(f'{message[i]}')
             
     else:
         ctx.send(":x: Nobody are playing now. If you want to start a game, use ``!start-game``")
 
 @bot.command(name="h")
-async def h(ctx, *, args):
-    display = td.textDisplay(gameController)
-    
+async def h(ctx, *, args):    
     if gameController.playing:
+        guild = ctx.guild
         player = gameController.getPlayerById(ctx.message.author.name)
         cardOnTop = gameController.getCardOnTop()
         turnOwner = gameController.getTurnOwner()
-        gameController.putCardFromHand(player, args)
+        gameController.putCardFromHand(player, valor(args))
+        display = td.TextDisplay(gameController)
         if cardOnTop is not gameController.getCardOnTop() or turnOwner is not gameController.getTurnOwner():
-            # Oye no es tu turno, sapo qlo || 
-            pass
+            categories = guild.categories
+            channels = []
+            message = display.outPutTextDisplay()
+            for category in categories:
+                if category.name == "Players":
+                    channels = category.channels
+            
+            for i in range(len(message)):
+                await channels[i].send(f'{message[i]}')
             
     else:
         ctx.send(":x: Nobody are playing now. If you want to start a game, use ``!start-game``")
@@ -336,8 +371,47 @@ async def h(ctx, *, args):
 @bot.command(name="n")
 async def n(ctx):
     if gameController.playing:
+        guild = ctx.guild
         player = gameController.getPlayerById(ctx.message.author.name)
         gameController.takeAll(player)
 
+        categories = guild.categories
+        channels = []
+        display = td.TextDisplay(gameController)
+        message = display.outPutTextDisplay()
+        for category in categories:
+            if category.name == "Players":
+                channels = category.channels
+        
+        for i in range(len(message)):
+            await channels[i].send(f'{message[i]}')
+    else:
+        ctx.send(":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
+
+
+@bot.command(name="c", help="Who is the last CareCaca?")
+async def carecaca(ctx):
+    careCaca = gameController.returnCareCaca()
+    if careCaca != None:
+        categories = guild.categories
+        channels = []
+        for category in categories:
+            if category.name == "Players":
+                channels = category.channels
+        
+        for i in range(len(channels)):
+            await channels[i].send(f'{careCaca.getId()}')
+    else:
+        return
+
+
+# adefecio
+def valor(arg):
+    if arg in ["a", "A"]: return 20
+    elif arg in ["j", "J"]: return 11
+    elif arg in ["q", "Q"]: return 12
+    elif arg in ["k", "K"]: return 13
+    elif arg in ["jk", "JK", "joker", "Joker"]: return 30
+    else: return arg
 
 bot.run(TOKEN)
