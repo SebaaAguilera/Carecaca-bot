@@ -236,12 +236,14 @@ async def startGame(ctx, *args):
     members = voice_channel.members
 
     # Creating roles and assigm them to Player
+    index = 0
     for member in members:
         if member.name == "Carecaca-bot":
             continue
         # if member.status != discord.Status.offline:
         else:
-            role_name = "player-" + str(members.index(member))
+            index += 1
+            role_name = "player-" + str(index)
             channel_name = role_name
             await create_role(ctx, member, guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
             await manage_text_channel(ctx, channel_name, "add", main_category)
@@ -271,15 +273,22 @@ async def endGame(ctx):
     await ctx.send(f'{ctx.message.author.name} has ended the game')
     await ctx.send('Deleting room...')
     guild = ctx.guild
-    members = ctx.message.guild.members
+    #members = ctx.message.guild.members
     category = discord.utils.get(guild.categories, name="Players")
 
+    # Get the people in a voice channel
+    voice_channel = ctx.message.author.voice_channel
+    members = voice_channel.members
+
     # Deleting Roles
-    for i in range(len(members)):
-        if members[i].name == "Carecaca-bot":
+    index = 0
+    for member in members):
+        if member.name == "Carecaca-bot":
             continue
-        if members[i].status != discord.Status.offline:
-            role_name = "player-" + str(i)
+        #if member.status != discord.Status.offline:
+        else:
+            index += 1
+            role_name = "player-" + str(index)
             channel_name = role_name
             await delete_role(ctx, role_name)
             await manage_text_channel(ctx, channel_name, "remove", category)
