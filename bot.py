@@ -235,17 +235,6 @@ async def startGame(ctx, *args):
     voice_channel = ctx.message.author.voice.channel
     members = voice_channel.members
 
-    """
-    # First, get the server from one of the following:
-    for server in bot.servers:
-        if server.name == "Server name":
-            break
-
-    # Second, get the channel  
-    for channel in server.channels:
-        if channel.name == "General":
-            members = channel.members"""
-
     # Creating roles and assigm them to Player
     index = 0
     for member in members:
@@ -398,17 +387,24 @@ async def carecaca(ctx):
 
 # adefecio
 def value(arg):
-    if arg in ["a", "A"]:
-        return 20
-    elif arg in ["j", "J"]:
-        return 11
-    elif arg in ["q", "Q"]:
-        return 12
-    elif arg in ["k", "K"]:
-        return 13
-    elif arg in ["jk", "JK", "joker", "Joker"]:
-        return 30
+    if isinstance(arg, str):
+        if arg in ["a", "A"]:
+            print(20)
+            return 20
+        elif arg in ["j", "J"]:
+            print(11)
+            return 11
+        elif arg in ["q", "Q"]:
+            print(12)
+            return 12
+        elif arg in ["k", "K"]:
+            print(13)
+            return 13
+        elif arg in ["jk", "JK", "joker", "Joker"]:
+            print(30)
+            return 30
     else:
+        print(arg)
         return int(arg)
 
 

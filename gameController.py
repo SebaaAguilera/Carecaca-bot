@@ -140,6 +140,8 @@ class GameController(object):
 
     def putCardAbstract(self, player, cardValue, hasInPlace, handOrEmptyHand=True, hand=True):
         prevStatus = self.getStatus()
+        print("prevST: ")
+        print(prevStatus)
         if(self.getCardOnTop() == None or self.getCardOnTop().isValidWith(cardValue)):
             if(self.flash and cardValue == self.cardOnTop.getValue()) or player.equalId(self.turnOwner):
                 if hasInPlace:
@@ -155,20 +157,26 @@ class GameController(object):
                 # if he/she don't own the card: do nothing
             # not valid player
             else:
+                print("jugador invalido(?)")
                 self.invalidMove(player)
         else:
+            print("carta erronea")
             # wrong card, take all the stack
             self.invalidMove(player)
             self.endTurn(player)
+
+        print("newStatus")
+        print(self.compareStatus(prevStatus))
         return self.compareStatus(prevStatus)
 
     # command !p (card number)
     def putCardFromHand(self, player, cardValue):
-        self.putCardAbstract(player, cardValue, player.hasInHand(cardValue))
+        print("llamo al abstract")
+        return self.putCardAbstract(player, cardValue, player.hasInHand(cardValue))
 
     # command !t (card value)
     def putCardFromVisible(self, player, cardValue):
-        self.putCardAbstract(player, cardValue, player.hasInVisible(
+        return self.putCardAbstract(player, cardValue, player.hasInVisible(
             cardValue), player.getHandLen() == 0, False)
 
     # command !h (card number)
