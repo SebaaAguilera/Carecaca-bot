@@ -34,15 +34,25 @@ class Card(object):
         return self.value <= cardValue
 
     def isValidWith(self, cardValue):
+        if cardValue in [2, A, JK]:
+            return True
+        elif(self.getValue == 7):
+            return self.geq(cardValue)
+        else:
+            return self.leq(cardValue)
+
+        """
         if (self.value in [2, A, JK]):
             return True
         elif(cardValue == 7):
-            return self.leq(cardValue)
+            return self.leq(7)
         else:
-            return self.geq(cardValue)
+            return self.geq(cardValue)"""
 
     def returnEffect(self):
-        if(self.value == 8):
+        if (self.value == 2):
+            return None
+        elif(self.value == 8):
             return "skip"
         elif (self.value == 10):
             return "burn"
