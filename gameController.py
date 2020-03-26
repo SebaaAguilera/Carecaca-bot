@@ -18,6 +18,7 @@ class GameController(object):
 
     def resetController(self):
         self.playing = False
+        self.resetPlayers()
         self.players = []
         self.deck = Deck(True)
         self.cardStack = []
@@ -26,6 +27,9 @@ class GameController(object):
         self.order = True  # true: right, false: left
         self.flash = False
         self.counter = 0
+
+    def resetPlayers(self):
+        [player.reset() for player in self.players]
 
     def setPlayer(self, player):
         self.players.append(player)
@@ -110,7 +114,7 @@ class GameController(object):
 
     def getPlayerById(self, id):
         for player in self.players:
-            if player.getId() == id:
+            if player.getId() is id:
                 return player
 
     def getPlen(self):

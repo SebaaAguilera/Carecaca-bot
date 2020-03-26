@@ -8,6 +8,11 @@ class Player(object):
         self.visible = []
         self.hiddenTable = []
 
+    def reset(self):
+        self.hand = []
+        self.visible = []
+        self.hiddenTable = []
+
     def getId(self):
         return self.id
 
@@ -88,4 +93,3 @@ class Player(object):
 
     def hasNoCards(self):
         return self.getHandLen == 0 and self.getVisibleLen() == 0 and self.getHiddenLen() == 0
-
