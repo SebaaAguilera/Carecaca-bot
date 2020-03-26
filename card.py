@@ -27,27 +27,19 @@ class Card(object):
     def equalCard(self, card):
         return self.equalValue(card) and self.equalSuit(card)
 
-    def geq(self, cardValue):
-        return self.value >= cardValue
+    def geq(self, card):
+        return self.value >= card.getValue()
 
-    def leq(self, cardValue):
-        return self.value <= cardValue
+    def leq(self, card):
+        return self.value <= card.getValue()
 
-    def isValidWith(self, cardValue):
-        if cardValue in [2, A, JK]:
+    def isValidWith(self, card):
+        if self.value in [2, A, JK] or card is None:
             return True
-        elif(self.getValue == 7):
-            return self.geq(cardValue)
+        elif(card.getValue() == 7):
+            return self.leq(card)
         else:
-            return self.leq(cardValue)
-
-        """
-        if (self.value in [2, A, JK]):
-            return True
-        elif(cardValue == 7):
-            return self.leq(7)
-        else:
-            return self.geq(cardValue)"""
+            return self.geq(card)
 
     def returnEffect(self):
         if (self.value == 2):

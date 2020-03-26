@@ -48,20 +48,20 @@ ctr.setTurnOwner(p0)
 
 # P0 cant put a card from the visible
 visibleCard = p0.getVisible()[0]
-ctr.putCardFromVisible(p0, visibleCard.getValue())
+put = ctr.putCardFromVisible(p0, visibleCard.getValue())
 assert visibleCard in p0.getVisible()
 assert ctr.getTurnOwner().getId() == p0.getId()
 
 # p0 cant put a card from the hiddenTable
 hiddenCard = p0.getHidden()[0]
-ctr.putCardFromHidden(p0, 11)  # 11%10-1=0
+put = ctr.putCardFromHidden(p0, 11)  # 11%10-1=0
 assert hiddenCard in p0.getHidden()
 assert ctr.getTurnOwner().getId() == p0.getId()
 
 
 # p0 put a 6
 handCard = p0.getHand()[0]
-ctr.putCardFromHand(p0, 6)
+put = ctr.putCardFromHand(p0, 6)
 assert handCard not in p0.getHand()
 assert p0.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p1.getId()
@@ -70,7 +70,7 @@ assert ctr.getCounter() == 1
 
 # p1 put a 6
 handCard = p1.getHand()[0]
-ctr.putCardFromHand(p1, 6)
+put = ctr.putCardFromHand(p1, 6)
 assert handCard not in p1.getHand()
 assert p1.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p2.getId()
@@ -78,7 +78,7 @@ assert ctr.getCounter() == 2
 
 # p2 put a 6
 handCard = p2.getHand()[0]
-ctr.putCardFromHand(p2, 6)
+put = ctr.putCardFromHand(p2, 6)
 assert handCard not in p2.getHand()
 assert p2.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p3.getId()
@@ -86,18 +86,19 @@ assert ctr.getCounter() == 3
 
 # p3 put a 6 and burns the cards, play again
 handCard = p3.getHand()[0]
-ctr.putCardFromHand(p3, 6)
+put = ctr.putCardFromHand(p3, 6)
 assert handCard not in p3.getHand()
 assert p3.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p3.getId()
 assert ctr.getCounter() == 0
+# print(ctr.getCardOnTop().getValue())
 assert ctr.getCardOnTop() is None
 assert len(ctr.getStack()) == 0
 
 
 # p3 put a 7
 handCard = p3.getHand()[0]
-ctr.putCardFromHand(p3, 7)
+put = ctr.putCardFromHand(p3, 7)
 assert handCard not in p3.getHand()
 assert p3.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p0.getId()
@@ -113,7 +114,7 @@ assert ctr.getCardOnTop() is None
 
 # p1 play a 10 burn the card and play again
 handCard = p1.getHand()[0]
-ctr.putCardFromHand(p1, 10)
+put = ctr.putCardFromHand(p1, 10)
 assert handCard not in p1.getHand()
 assert p1.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p1.getId()
@@ -123,7 +124,7 @@ assert len(ctr.getStack()) == 0
 
 # p1 play J changing the
 handCard = p1.getHand()[0]
-ctr.putCardFromHand(p1, J)
+put = ctr.putCardFromHand(p1, J)
 assert handCard not in p1.getHand()
 assert p1.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p0.getId()
