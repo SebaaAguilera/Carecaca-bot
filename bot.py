@@ -212,51 +212,54 @@ async def clear(ctx, amount=100):
 
 @bot.command(name="start-game", help="Start a CareCaca game")
 async def startGame(ctx, *args):
-    if len(args) > 0:
-        if args[0] == "True":
-            gameController.setFlash(True)
-        elif args[0] == "False":
-            gameController.setFlash(False)
-        else:
-            e = discord.Embed(
-                title=':x: Invalid argument, if you wanna play with Flash use ``!start-game True``', colour=discord.Colour(0xff3232))
-            await ctx.send("", embed=e)
-            return
+    if not gameController.playing:
+        if len(args) > 0:
+            if args[0] == "True":
+                gameController.setFlash(True)
+            elif args[0] == "False":
+                gameController.setFlash(False)
+            else:
+                e = discord.Embed(
+                    title=':x: Invalid argument, if you wanna play with Flash use ``!start-game True``', colour=discord.Colour(0xff3232))
+                await ctx.send("", embed=e)
+                return
 
-    await ctx.send(f'{ctx.message.author.name} has started a Carecaca Game')
-    await ctx.send("Preparing room...")
-    # members = ctx.message.guild.members
-    guild = ctx.guild
+        await ctx.send(f'{ctx.message.author.name} has started a Carecaca Game')
+        await ctx.send("Preparing room...")
+        # members = ctx.message.guild.members
+        guild = ctx.guild
 
-    # Text Channels will agrupate in category 'Players'
-    main_category = await guild.create_category_channel("Players")
+        # Text Channels will agrupate in category 'Players'
+        main_category = await guild.create_category_channel("Players")
 
-    # Get the people in a voice channel
-    voice_channel = ctx.message.author.voice.channel
-    members = voice_channel.members
+        # Get the people in a voice channel
+        voice_channel = ctx.message.author.voice.channel
+        members = voice_channel.members
 
-    # Creating roles and assigm them to Player
-    index = 0
-    playersMsg = ""
-    for member in members:
-        if member.name == "Carecaca-bot":
-            continue
-        # if member.status != discord.Status.offline:
-        else:
-            index += 1
-            role_name = "player-" + str(index)
-            playersMsg += str(role_name) + ": " + str(member.name) + "\n"
-            channel_name = role_name
-            await create_role(ctx, member, guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
-            await manage_text_channel(ctx, channel_name, "add", main_category)
-            await set_permission_text_channel(ctx, channel_name, role_name, main_category)
+        # Creating roles and assigm them to Player
+        index = 0
+        playersMsg = ""
+        for member in members:
+            if member.name == "Carecaca-bot":
+                continue
+            # if member.status != discord.Status.offline:
+            else:
+                index += 1
+                role_name = "player-" + str(index)
+                playersMsg += str(role_name) + ": " + str(member.name) + "\n"
+                channel_name = role_name
+                await create_role(ctx, member, guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
+                await manage_text_channel(ctx, channel_name, "add", main_category)
+                await set_permission_text_channel(ctx, channel_name, role_name, main_category)
 
-    e = discord.Embed(title=':white_check_mark: Room is ready, please join to your Text Channel\n' + 'Assigned rooms: \n' + playersMsg,
-                      colour=discord.Colour(0x09c48c))
-    await ctx.send('', embed=e)
+        e = discord.Embed(title=':white_check_mark: Room is ready, please join to your Text Channel\n' + 'Assigned rooms: \n' + playersMsg,
+                          colour=discord.Colour(0x09c48c))
+        await ctx.send('', embed=e)
 
-    gameController.initGame()
-    await msgStatus(ctx)
+        gameController.initGame()
+        await msgStatus(ctx)
+    else:
+        await ctx.send(':x: There is a game already')
 
 
 @bot.command(name="end-game", help="End a CareCaca game")
