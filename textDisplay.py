@@ -81,14 +81,16 @@ class TextDisplay(object):
             for j in range(0, self.controller.getPlen()):
                 if (i != j):
                     dpls_per_player[i] += "\n **" + plInfo[j][0] + "'s cards: ** \n" + \
-                        plInfo[j][2] + plInfo[j][3] + "\n\n"
-            dpls_per_player[i] += "** The turn owner is: __" + turnOwner + "__** \n\n"
+                        plInfo[j][2] + plInfo[j][3] + "\n"
+            dpls_per_player[i] += "** The turn owner is: __" + \
+                turnOwner + "__** \n\n"
             dpls_per_player[i] += "** Card on Top: **" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
                 "\n"
-            dpls_per_player[i] += "** Any cards to draw? " + \
-                str(self.controller.haveCards()) + "** \n\n"
+            dpls_per_player[i] += "** Cards left:" + \
+                str(self.controller.deck.len()) + "/108 ** \n\n"
             dpls_per_player[i] += "** Your Cards: **\n"
             dpls_per_player[i] += "** Hand Cards: ** \n" + plInfo[i][1]
-            dpls_per_player[i] += "** Table Cards: ** \n" + plInfo[i][2] + plInfo[i][3]
+            dpls_per_player[i] += "** Table Cards: ** \n" + \
+                plInfo[i][2] + plInfo[i][3] + "\n\n"
 
         return dpls_per_player
