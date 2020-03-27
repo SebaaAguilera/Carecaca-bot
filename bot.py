@@ -332,9 +332,11 @@ async def requestCtr(ctx, functionCall):
 
 #
 @bot.command(name="leave", help="You'll leave the game ")
-async def p(ctx, *, args):
+async def p(ctx):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
+        if (player.getId() == gameController.getTurnOwner().getId()):
+            gameController.endTurn()
         await gameController.leaveGame(player)
     else:
         await ctx.send(
