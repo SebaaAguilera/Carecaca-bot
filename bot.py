@@ -214,11 +214,16 @@ async def clear(ctx, amount=100):
 
 @bot.command(name="start-game", help="Start a CareCaca game")
 async def startGame(ctx, *args):
+    voice = ctx.message.author.voice
+    if voice == None:
+        await ctx.send(':x: You must to be in a Voice Channel')
+        return 
     # if not gameController.playing:
     authorId = ctx.message.author.guild.id
     if gcDict.get(authorId) is None:
         gcDict[authorId] = gc.GameController()
         ctr = gcDict.get(authorId)
+        print(gcDict)
         if len(args) > 0:
             if args[0] == "True":
                 ctr.setFlash(True)
@@ -239,7 +244,7 @@ async def startGame(ctx, *args):
         main_category = await guild.create_category_channel("Players")
 
         # Get the people in a voice channel and server id
-        voice_channel = ctx.message.author.voice.channel
+        voice_channel = voice.channel
         members = voice_channel.members
 
         # Creating roles and assigm them to Player
@@ -302,7 +307,8 @@ async def endGame(ctx):
     ctr = gcDict.get(server_id)
     ctr.resetController()
 
-    gcDict.pop(ctr, None)
+    del gcDict[server_id]
+    print(gcDict)
 
 
 @bot.command(name="emoji", help="testing emoji messages")
@@ -334,7 +340,7 @@ async def get_players(ctx):
 
 
 async def requestCtr(ctx, functionCall):
-    asyncio.sleep(1)
+    await asyncio.sleep(1)
     if (functionCall):  # aqui llegaria el putBlablabla
         await msgStatus(ctx)
     else:
