@@ -134,7 +134,7 @@ class GameController(object):
         if self.cardOnTop is None or self.cardOnTop.equalValue(card):
             self.counter += 1
         else:
-            self.counter = 0
+            self.counter = 1
 
     def getCounter(self):
         return self.counter
