@@ -387,17 +387,16 @@ async def carecaca(ctx):
 
 # adefecio
 def value(arg):
-    if isinstance(arg, str):
-        if arg in ["a", "A"]:
-            return 20
-        elif arg in ["j", "J"]:
-            return 11
-        elif arg in ["q", "Q"]:
-            return 12
-        elif arg in ["k", "K"]:
-            return 13
-        elif arg in ["jk", "JK", "joker", "Joker"]:
-            return 30
+    if arg in ["a", "A"]:
+        return 20
+    elif arg in ["j", "J"]:
+        return 11
+    elif arg in ["q", "Q"]:
+        return 12
+    elif arg in ["k", "K"]:
+        return 13
+    elif arg in ["jk", "JK", "joker", "Joker"]:
+        return 30
     else:
         return int(arg)
 
