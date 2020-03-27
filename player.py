@@ -90,4 +90,4 @@ class Player(object):
         return self.hiddenTable.pop(self.hiddenTable.index(card))
 
     def hasNoCards(self):
-        return self.getHandLen == 0 and self.getVisibleLen() == 0 and self.getHiddenLen() == 0
+        return self.getHandLen() == 0 and self.getVisibleLen() == 0 and self.getHiddenLen() == 0

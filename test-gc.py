@@ -149,7 +149,7 @@ dck = Deck(True)
 # setHands
 h0 = dck.popAListByValues([10, JK, 8, 2, 3])
 h1 = dck.popAListByValues([JK, 10, J])
-h2 = dck.popAListByValues([2, 4, 7])
+h2 = dck.popAListByValues([8, 4, 7])
 h3 = dck.popAListByValues([8, 7, A])
 
 
@@ -185,12 +185,10 @@ assert putCard
 putCard = ctr2.putCardFromHand(p0, JK)
 # p0 plays a joker jumps p1
 assert putCard
-print(ctr2.getTurnOwner())
 assert ctr2.getTurnOwner() is p2
 # p2 plays an 8 jumps p3
 putCard = ctr2.putCardFromHand(p2, 8)
 assert putCard
-print(ctr2.getTurnOwner())
 assert ctr2.getTurnOwner() is p0
 
 
