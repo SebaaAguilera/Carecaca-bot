@@ -337,8 +337,8 @@ async def p(ctx):
         player = gameController.getPlayerById(ctx.message.author.name)
         if (player.getId() == gameController.getTurnOwner().getId()):
             gameController.endTurn(player)
-            gameController.leaveGame(player)
             await msgStatus(ctx)
+        gameController.leaveGame(player)
     else:
         await ctx.send(
             ":x: Nobody is playing now. You can't leave a game now")
