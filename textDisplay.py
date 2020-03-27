@@ -86,8 +86,9 @@ class TextDisplay(object):
                 turnOwner + "__** \n\n"
             dpls_per_player[i] += "** Card on Top: **" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
                 "\n"
-            dpls_per_player[i] += "** Cards left:" + \
-                str(self.controller.deck.len()) + "/108 ** \n\n"
+            dpls_per_player[i] += "** Cards in stack: " + \
+                str(len(self.cardSatck))
+            str(self.controller.deck.len()) + "/108 ** \n\n"
             dpls_per_player[i] += "** Your Cards: **\n"
             dpls_per_player[i] += "** Hand Cards: ** \n" + plInfo[i][1]
             dpls_per_player[i] += "** Table Cards: ** \n" + \
