@@ -147,10 +147,10 @@ print("Finished first part!")
 dck = Deck(True)
 
 # setHands
-h0 = dck.popAListByValues([10, JK, 8])
+h0 = dck.popAListByValues([10, JK, 8, 2, 3])
 h1 = dck.popAListByValues([JK, 10, J])
-h2 = dck.popAListByValues([6, 2, 7])
-h3 = dck.popAListByValues([6, 7, A])
+h2 = dck.popAListByValues([2, 4, 7])
+h3 = dck.popAListByValues([8, 7, A])
 
 
 # setPlayers
@@ -168,7 +168,7 @@ pl = [p0, p1, p2, p3]
 # setGameController
 ctr2 = GameController()
 for p in pl:
-    ctr.setPlayer(p)
+    ctr2.setPlayer(p)
 ctr2.changeDeck(dck)
 
 # set visible and hidden visibleCards
@@ -183,7 +183,15 @@ ctr2.setTurnOwner(p0)
 putCard = ctr2.putCardFromHand(p0, 10)
 assert putCard
 putCard = ctr2.putCardFromHand(p0, JK)
+# p0 plays a joker jumps p1
 assert putCard
+print(ctr2.getTurnOwner())
+assert ctr2.getTurnOwner() is p2
+# p2 plays an 8 jumps p3
+putCard = ctr2.putCardFromHand(p2, 8)
+assert putCard
+print(ctr2.getTurnOwner())
+assert ctr2.getTurnOwner() is p0
 
 
 print("Finished second part!")

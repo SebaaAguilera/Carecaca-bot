@@ -126,6 +126,8 @@ class GameController(object):
         return len(self.players)
 
     def indexP(self, player):
+        # print(player)
+        # print(self.players)
         return self.players.index(player)
 
     def addCounter(self, player, card):
