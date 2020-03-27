@@ -10,6 +10,7 @@ class GameController(object):
         self.players = []
         self.deck = Deck(True)
         self.cardStack = []
+        self.burnedCards = []
         self.cardOnTop = None
         self.turnOwner = None
         self.order = True  # true: right, false: left
@@ -49,7 +50,7 @@ class GameController(object):
         self.playing = True
 
     def getStatus(self):
-        return [self.cardOnTop, self.turnOwner, self.order]
+        return [self.cardOnTop, self.turnOwner, self.order, len(self.burnedCards)]
 
     def compareStatus(self, prevStatus):
         newSt = self.getStatus()
@@ -98,6 +99,7 @@ class GameController(object):
         return self.deck.len() > 0
 
     def burn(self):
+        self.burnedCards += self.cardStack
         self.cardOnTop = None
         self.cardStack = []
         self.counter = 0
@@ -139,7 +141,6 @@ class GameController(object):
         if card is None:
             return False
         prevStatus = self.getStatus()
-        print(prevStatus)
         if(card.isValidWith(self.getCardOnTop())):
             if (self.flash and card.equalValue(self.cardOnTop)) or player.equalId(self.turnOwner):
                 self.turnOwner = player
@@ -157,8 +158,7 @@ class GameController(object):
             # wrong card, take all the stack
             self.getAllFromStack(player)
             self.endTurn(player)
-        print(self.getStatus())
-        return self.compareStatus(prevStatus) or
+        return self.compareStatus(prevStatus)
 
     # command !p (card number)
     def putCardFromHand(self, player, cardValue):
@@ -209,10 +209,7 @@ class GameController(object):
         if (effect == "skip"):
             self.endTurn(player, 1)
         elif (effect == "burn" or self.counter == 4):
-            print("hola")
-            print(self.cardOnTop)
             self.burn()
-            print(self.cardOnTop)
         elif (effect == "changeOrder"):
             self.changeOrder()
             self.endTurn(player)
@@ -220,7 +217,6 @@ class GameController(object):
             self.cardStack.pop()
             auxPlayer = self.returnPlayer_Order(player)
             while(auxPlayer.hasNoCards()):
-                print(auxPlayer)
                 auxPlayer = self.returnPlayer_Order(auxPlayer)
             self.getAllFromStack(auxPlayer)
             self.endTurn(auxPlayer)  # posiblemente de error

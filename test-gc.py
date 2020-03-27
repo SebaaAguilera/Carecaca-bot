@@ -141,4 +141,49 @@ assert ctr.getCounter() == 0
 assert ctr.getOrder() == False
 
 
-print("Finished!")
+print("Finished first part!")
+
+
+dck = Deck(True)
+
+# setHands
+h0 = dck.popAListByValues([10, JK, 8])
+h1 = dck.popAListByValues([JK, 10, J])
+h2 = dck.popAListByValues([6, 2, 7])
+h3 = dck.popAListByValues([6, 7, A])
+
+
+# setPlayers
+p0 = Player(0)
+p0.setManyCardsToHand(h0)
+p1 = Player(1)
+p1.setManyCardsToHand(h1)
+p2 = Player(2)
+p2.setManyCardsToHand(h2)
+p3 = Player(3)
+p3.setManyCardsToHand(h3)
+
+pl = [p0, p1, p2, p3]
+
+# setGameController
+ctr2 = GameController()
+for p in pl:
+    ctr.setPlayer(p)
+ctr2.changeDeck(dck)
+
+# set visible and hidden visibleCards
+for player in ctr2.getPlayers():
+    player.setManyCardsToVisible(dck.popAListByLen(3))
+    player.setManyCardsToHidden(dck.popAListByLen(3))
+
+# set initial turnOwner
+ctr2.setTurnOwner(p0)
+
+# p0 put a 10 with no card on top
+putCard = ctr2.putCardFromHand(p0, 10)
+assert putCard
+putCard = ctr2.putCardFromHand(p0, JK)
+assert putCard
+
+
+print("Finished second part!")
