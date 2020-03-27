@@ -330,6 +330,16 @@ async def requestCtr(ctx, functionCall):
         await ctx.send(":x: UwU Algo pasa`")
 
 
+#
+@bot.command(name="leave", help="You'll leave the game ")
+async def p(ctx, *, args):
+    if gameController.playing:
+        player = gameController.getPlayerById(ctx.message.author.name)
+        await gameController.leaveGame(player)
+    else:
+        await ctx.send(
+            ":x: Nobody is playing now. You can't leave a game now")
+
 # !y <cardNumber>
 #
 @bot.command(name="y", help="Put a card from your hand like '!p 5' ")

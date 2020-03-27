@@ -31,6 +31,9 @@ class GameController(object):
     def resetPlayers(self):
         [player.reset() for player in self.players]
 
+    def leaveGame(self, player):
+        player.reset()
+
     def setPlayer(self, player):
         self.players.append(player)
 
