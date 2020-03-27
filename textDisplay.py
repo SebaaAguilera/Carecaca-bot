@@ -87,7 +87,7 @@ class TextDisplay(object):
             dpls_per_player[i] += "** Card on Top: **" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
                 "\n"
             dpls_per_player[i] += "** Cards in stack: " + \
-                str(len(self.cardSatck))
+                str(len(self.controller.cardStack))
             str(self.controller.deck.len()) + "/108 ** \n\n"
             dpls_per_player[i] += "** Your Cards: **\n"
             dpls_per_player[i] += "** Hand Cards: ** \n" + plInfo[i][1]
