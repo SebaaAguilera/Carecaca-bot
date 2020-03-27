@@ -338,6 +338,7 @@ async def p(ctx):
         if (player.getId() == gameController.getTurnOwner().getId()):
             gameController.endTurn(player)
         await gameController.leaveGame(player)
+        await msgStatus(ctx):
     else:
         await ctx.send(
             ":x: Nobody is playing now. You can't leave a game now")
