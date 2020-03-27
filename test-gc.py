@@ -14,9 +14,9 @@ JK = 30
 dck = Deck(True)
 
 # setHands
-h0 = dck.popAListByValues([6, 7, 8])
+h0 = dck.popAListByValues([6, JK, 8])
 h1 = dck.popAListByValues([6, 10, J])
-h2 = dck.popAListByValues([6, 2, JK])
+h2 = dck.popAListByValues([6, 2, 7])
 h3 = dck.popAListByValues([6, 7, A])
 
 
@@ -91,7 +91,6 @@ assert handCard not in p3.getHand()
 assert p3.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p3.getId()
 assert ctr.getCounter() == 0
-# print(ctr.getCardOnTop().getValue())
 assert ctr.getCardOnTop() is None
 assert len(ctr.getStack()) == 0
 
@@ -129,6 +128,16 @@ assert handCard not in p1.getHand()
 assert p1.getHandLen() == 3
 assert ctr.getTurnOwner().getId() == p0.getId()
 assert ctr.getCounter() == 1
+assert ctr.getOrder() == False
+
+# p0 play plays a joker and p3 now have a J
+jota = ctr.getCardOnTop()
+handCard = p0.getHand()[0]
+put = ctr.putCardFromHand(p0, JK)
+assert handCard not in p0.getHand()
+assert p0.getHandLen() == 3
+assert ctr.getTurnOwner().getId() == p2.getId()  # skips p3
+assert ctr.getCounter() == 0
 assert ctr.getOrder() == False
 
 

@@ -77,6 +77,7 @@ class GameController(object):
         self.cardStack.append(card)
         self.cardOnTop = card
         self.drawCards(player)
+        self.endTurnEffects(player)
 
     def getCardOnTop(self):
         return self.cardOnTop
@@ -88,18 +89,13 @@ class GameController(object):
         player.setManyCardsToHand(self.cardStack)
         self.cardStack = []
         self.cardOnTop = None
-
-    def invalidMove(self, player):
-        self.getAllFromStack(player)
         self.counter = 0
 
     def haveCards(self):
         return self.deck.len() > 0
 
     def burn(self):
-        print(self.cardOnTop.getValue())
         self.cardOnTop = None
-        print(self.cardOnTop)
         self.cardStack = []
         self.counter = 0
 
@@ -130,13 +126,8 @@ class GameController(object):
     def addCounter(self, player, card):
         if self.cardOnTop is None or self.cardOnTop.equalValue(card):
             self.counter += 1
-            print(self.counter)
-            if (self.counter == 4):
-                self.burn()
-                return
         else:
             self.counter = 0
-        self.endTurnEffects(player)
 
     def getCounter(self):
         return self.counter
@@ -157,10 +148,10 @@ class GameController(object):
                 # if he/she don't own the card: do nothing
             # not valid player
             else:
-                self.invalidMove(player)
+                self.getAllFromStack(player)
         else:
             # wrong card, take all the stack
-            self.invalidMove(player)
+            self.getAllFromStack(player)
             self.endTurn(player)
         return self.compareStatus(prevStatus)
 
@@ -182,7 +173,7 @@ class GameController(object):
             if card.isValidWith(self.cardOnTop):
                 self.setCardOnTop(
                     player, player.popCardFromHidden(card))
-                endTurnEffects(player)
+                self.endTurnEffects(player)
             else:
                 # wrong card, take all
                 player.setHand(player.popCardFromHidden(card))
@@ -193,12 +184,11 @@ class GameController(object):
     # command !n
     def takeAll(self, player):
         if player.equalId(self.turnOwner):
-            self.invalidMove(player)
+            self.getAllFromStack(player)
             self.endTurn(player)
 
     def returnPlayer_Order(self, player, skip=0):
-        return self.players[(self.indexP(
-            player)+self.returnOrder()*(1+skip)) % self.getPlen()]
+        return self.players[(self.indexP(player)+self.returnOrder()*(1+skip)) % self.getPlen()]
 
     def endTurn(self, player, skip=0):
         auxPlayer = self.returnPlayer_Order(player, skip)
@@ -213,7 +203,7 @@ class GameController(object):
         effect = self.getCardOnTop().returnEffect()
         if (effect == "skip"):
             self.endTurn(player, 1)
-        elif (effect == "burn"):
+        elif (effect == "burn" or self.counter == 4):
             self.burn()
         elif (effect == "changeOrder"):
             self.changeOrder()
@@ -221,7 +211,8 @@ class GameController(object):
         elif (effect == "takeAll"):
             self.cardStack.pop()
             auxPlayer = self.returnPlayer_Order(player)
-            while(auxPlayer.hasNoCards):
+            while(auxPlayer.hasNoCards()):
+                print(auxPlayer)
                 auxPlayer = self.returnPlayer_Order(auxPlayer)
             self.getAllFromStack(auxPlayer)
             self.endTurn(auxPlayer)  # posiblemente de error

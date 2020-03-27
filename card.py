@@ -12,6 +12,9 @@ class Card(object):
         self.value = value
         self.suit = suit
 
+    def __str__(self):
+        return str(self.value) + " " + str(self.suit)
+
     def getValue(self):
         return self.value
 

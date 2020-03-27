@@ -8,6 +8,9 @@ class Player(object):
         self.visible = []
         self.hiddenTable = []
 
+    def __str__(self):
+        return str(self.id)
+
     def reset(self):
         self.hand = []
         self.visible = []
