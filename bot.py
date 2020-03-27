@@ -337,7 +337,7 @@ async def p(ctx, *, args):
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
-@bot.command(name="t", help="Put a card from your table cards like '!t J')
+@bot.command(name="t", help="Put a card from your table cards like '!t J'")
 async def t(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
@@ -347,7 +347,7 @@ async def t(ctx, *, args):
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
-@bot.command(name="h", help="Put a card from ypur hidden cards like '!h 5')
+@bot.command(name="h", help="Put a card from ypur hidden cards like '!h 5'")
 async def h(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
@@ -357,7 +357,7 @@ async def h(ctx, *, args):
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 # list
-@bot.command(name="n", help="If there're not available cards, take all from the table!!')
+@bot.command(name="n", help="If there're not available cards, take all from the table!!'")
 async def n(ctx):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
