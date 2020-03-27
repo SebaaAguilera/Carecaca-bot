@@ -327,7 +327,7 @@ async def requestCtr(ctx, functionCall):
 
 # !p <cardNumber>
 #
-@bot.command(name="p")
+@bot.command(name="p", help="Put a card from your hand like '!p 5' ")
 async def p(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
@@ -337,7 +337,7 @@ async def p(ctx, *, args):
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
-@bot.command(name="t")
+@bot.command(name="t", help="Put a card from your table cards like '!t J')
 async def t(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
@@ -347,7 +347,7 @@ async def t(ctx, *, args):
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
-@bot.command(name="h")
+@bot.command(name="h", help="Put a card from ypur hidden cards like '!h 5')
 async def h(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
@@ -357,7 +357,7 @@ async def h(ctx, *, args):
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 # list
-@bot.command(name="n")
+@bot.command(name="n", help="If there're not available cards, take all from the table!!')
 async def n(ctx):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
@@ -389,22 +389,16 @@ async def carecaca(ctx):
 def value(arg):
     if isinstance(arg, str):
         if arg in ["a", "A"]:
-            print(20)
             return 20
         elif arg in ["j", "J"]:
-            print(11)
             return 11
         elif arg in ["q", "Q"]:
-            print(12)
             return 12
         elif arg in ["k", "K"]:
-            print(13)
             return 13
         elif arg in ["jk", "JK", "joker", "Joker"]:
-            print(30)
             return 30
     else:
-        print(arg)
         return int(arg)
 
 
