@@ -237,6 +237,7 @@ async def startGame(ctx, *args):
 
     # Creating roles and assigm them to Player
     index = 0
+    playersMsg = ""
     for member in members:
         if member.name == "Carecaca-bot":
             continue
@@ -244,12 +245,13 @@ async def startGame(ctx, *args):
         else:
             index += 1
             role_name = "player-" + str(index)
+            playersMsg += str(role_name) + ": " + str(member.name) + "\n"
             channel_name = role_name
             await create_role(ctx, member, guild, role_name, mentionable=True, colour=discord.Colour(0x09c48c))
             await manage_text_channel(ctx, channel_name, "add", main_category)
             await set_permission_text_channel(ctx, channel_name, role_name, main_category)
 
-    e = discord.Embed(title=':white_check_mark: Room is ready, please join to your Text Channel',
+    e = discord.Embed(title=':white_check_mark: Room is ready, please join to your Text Channel\n' + 'Assigned rooms: \n' + playersMsg,
                       colour=discord.Colour(0x09c48c))
     await ctx.send('', embed=e)
 
@@ -325,9 +327,9 @@ async def requestCtr(ctx, functionCall):
         await ctx.send(":x: UwU Algo pasa`")
 
 
-# !p <cardNumber>
+# !y <cardNumber>
 #
-@bot.command(name="p", help="Put a card from your hand like '!p 5' ")
+@bot.command(name="y", help="Put a card from your hand like '!p 5' ")
 async def p(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)
@@ -347,7 +349,7 @@ async def t(ctx, *, args):
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
 
-@bot.command(name="h", help="Put a card from ypur hidden cards like '!h 5'")
+@bot.command(name="h", help="Put a card from ypur hidden cards like '!h 2'")
 async def h(ctx, *, args):
     if gameController.playing:
         player = gameController.getPlayerById(ctx.message.author.name)

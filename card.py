@@ -37,7 +37,7 @@ class Card(object):
         return self.value <= card.getValue()
 
     def isValidWith(self, card):
-        if self.value in [2, A, JK] or card is None:
+        if self.value in [2, 10, A, JK] or card is None:
             return True
         elif(card.getValue() == 7):
             return self.leq(card)
