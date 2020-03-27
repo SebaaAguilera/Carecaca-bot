@@ -169,7 +169,7 @@ class GameController(object):
         if cardIndex not in range(1, player.getHiddenLen()+1):
             return False
         card = player.getHidden()[cardIndex - 1]
-        if (card.equalValue(self.turnOwner) and player.getHandLen() == 0 and player.getVisibleLen == 0):
+        if (player.equalId(self.turnOwner) and player.getHandLen() == 0 and player.getVisibleLen == 0):
             if card.isValidWith(self.cardOnTop):
                 self.setCardOnTop(
                     player, player.popCardFromHidden(card))
