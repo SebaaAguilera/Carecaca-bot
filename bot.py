@@ -45,7 +45,8 @@ logger.addHandler(handler)
 # ====================================== Class ================================================
 # =============================================================================================
 
-gameController = gc.GameController()
+##gameController = gc.GameController()
+gcDict = {}
 
 
 @bot.event
@@ -116,7 +117,8 @@ async def add_role_to_player(ctx, role, member):
 async def asign_member_to_object_player(member):
     pl = player.Player(member.name)
     print(f'Object player {pl.getId()} has been assigned to {member.name}')
-    gameController.setPlayer(pl)
+    # gameController.setPlayer(pl)
+    gcDict[member.guild.id].setPlayer(pl)
 
 
 # delete_role
@@ -189,7 +191,7 @@ async def set_permission_text_channel(ctx, channel_name, role_name, category):
 
 async def msgStatus(ctx):
     guild = ctx.guild
-    display = td.TextDisplay(gameController)
+    display = td.TextDisplay(gcDict.get(guild.id))
     categories = guild.categories
     channels = []
     message = display.outPutTextDisplay()
@@ -212,12 +214,16 @@ async def clear(ctx, amount=100):
 
 @bot.command(name="start-game", help="Start a CareCaca game")
 async def startGame(ctx, *args):
-    if not gameController.playing:
+    # if not gameController.playing:
+    authorId = ctx.message.author.guild.id
+    if gcDict.get(authorId) is None:
+        gcDict[authorId] = gc.GameController()
+        ctr = gcDict.get(authorId)
         if len(args) > 0:
             if args[0] == "True":
-                gameController.setFlash(True)
+                ctr.setFlash(True)
             elif args[0] == "False":
-                gameController.setFlash(False)
+                ctr.setFlash(True)
             else:
                 e = discord.Embed(
                     title=':x: Invalid argument, if you wanna play with Flash use ``!start-game True``', colour=discord.Colour(0xff3232))
@@ -232,7 +238,7 @@ async def startGame(ctx, *args):
         # Text Channels will agrupate in category 'Players'
         main_category = await guild.create_category_channel("Players")
 
-        # Get the people in a voice channel
+        # Get the people in a voice channel and server id
         voice_channel = ctx.message.author.voice.channel
         members = voice_channel.members
 
@@ -256,7 +262,8 @@ async def startGame(ctx, *args):
                           colour=discord.Colour(0x09c48c))
         await ctx.send('', embed=e)
 
-        gameController.initGame()
+        # gameController.initGame()
+        ctr.initGame()
         await msgStatus(ctx)
     else:
         await ctx.send(':x: There is a game already')
@@ -273,13 +280,13 @@ async def endGame(ctx):
     # Get the people in a voice channel
     voice_channel = ctx.message.author.voice.channel
     members = voice_channel.members
+    server_id = ctx.message.author.guild.id
 
     # Deleting Roles
     index = 0
     for member in members:
         if member.name == "Carecaca-bot":
             continue
-        # if member.status != discord.Status.offline:
         else:
             index += 1
             role_name = "player-" + str(index)
@@ -292,7 +299,9 @@ async def endGame(ctx):
 
     await ctx.send('Room has been deleted')
 
-    gameController.resetController()
+    ctr = gcDict.get(server_id)
+    ctr.resetController()
+    dict.pop(ctr, None)
 
 
 @bot.command(name="emoji", help="testing emoji messages")
@@ -307,7 +316,8 @@ async def hi(ctx):
 
 @bot.command(name="get-players", help="Print currently players (???")
 async def get_players(ctx):
-    players = gameController.getPlayers()
+    ctr = gcDict.get(ctx.message.author.guild.id)
+    players = ctr.getPlayers()
     string = ""
     for player in players:
         string += player.getId() + "\n"
@@ -333,12 +343,15 @@ async def requestCtr(ctx, functionCall):
 #
 @bot.command(name="leave", help="You'll leave the game ")
 async def p(ctx):
-    if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.name)
-        if (player.getId() == gameController.getTurnOwner().getId()):
-            gameController.endTurn(player)
+    # if gameController.playing:
+    authorId = ctx.message.author.guild.id
+    ctr = gcDict.get(authorId)
+    if ctr is not None:
+        player = ctr.getPlayerById(ctx.message.author.name)
+        if (player.getId() == ctr.getTurnOwner().getId()):
+            ctr.endTurn(player)
             await msgStatus(ctx)
-        gameController.leaveGame(player)
+        ctr.leaveGame(player)
     else:
         await ctx.send(
             ":x: Nobody is playing now. You can't leave a game now")
@@ -346,10 +359,13 @@ async def p(ctx):
 # !y <cardNumber>
 #
 @bot.command(name="y", help="Put a card from your hand like '!p 5' ")
-async def p(ctx, *, args):
-    if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.name)
-        await requestCtr(ctx, gameController.putCardFromHand(player, value(args)))
+async def y(ctx, *, args):
+    # if ctr.playing:
+    authorId = ctx.message.author.guild.id
+    ctr = gcDict.get(authorId)
+    if ctr is not None:
+        player = ctr.getPlayerById(ctx.message.author.name)
+        await requestCtr(ctx, ctr.putCardFromHand(player, value(args)))
     else:
         await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
@@ -357,9 +373,12 @@ async def p(ctx, *, args):
 
 @bot.command(name="t", help="Put a card from your table cards like '!t J'")
 async def t(ctx, *, args):
-    if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.name)
-        await requestCtr(ctx, gameController.putCardFromVisible(player, value(args)))
+    # if ctr.playing:
+    authorId = ctx.message.author.guild.id
+    ctr = gcDict.get(authorId)
+    if ctr is not None:
+        player = ctr.getPlayerById(ctx.message.author.name)
+        await requestCtr(ctx, ctr.putCardFromVisible(player, value(args)))
     else:
         await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
@@ -367,9 +386,12 @@ async def t(ctx, *, args):
 
 @bot.command(name="h", help="Put a card from ypur hidden cards like '!h 2'")
 async def h(ctx, *, args):
-    if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.name)
-        await requestCtr(ctx, gameController.putCardFromHidden(player, int(args)))
+    # if ctr.playing:
+    authorId = ctx.message.author.guild.id
+    ctr = gcDict.get(authorId)
+    if ctr is not None:
+        player = ctr.getPlayerById(ctx.message.author.name)
+        await requestCtr(ctx, ctr.putCardFromHidden(player, int(args)))
     else:
         await ctx.send(
             ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
@@ -377,9 +399,12 @@ async def h(ctx, *, args):
 # list
 @bot.command(name="n", help="If there're not available cards, take all from the table!!'")
 async def n(ctx):
-    if gameController.playing:
-        player = gameController.getPlayerById(ctx.message.author.name)
-        gameController.takeAll(player)
+    # if ctr.playing:
+    authorId = ctx.message.author.guild.id
+    ctr = gcDict.get(authorId)
+    if ctr is not None:
+        player = ctr.getPlayerById(ctx.message.author.name)
+        ctr.takeAll(player)
         await msgStatus(ctx)
     else:
         await ctx.send(
@@ -388,19 +413,22 @@ async def n(ctx):
 
 @bot.command(name="c", help="Who is the last CareCaca?")
 async def carecaca(ctx):
-    guild = ctx.guild
-    careCaca = gameController.returnCareCaca()
-    if careCaca != None:
-        categories = guild.categories
-        channels = []
-        for category in categories:
-            if category.name == "Players":
-                channels = category.channels
+    authorId = ctx.message.author.guild.id
+    ctr = gcDict.get(authorId)
+    if ctr is not None:
+        guild = ctx.guild
+        careCaca = ctr.returnCareCaca()
+        if careCaca != None:
+            categories = guild.categories
+            channels = []
+            for category in categories:
+                if category.name == "Players":
+                    channels = category.channels
 
-        for i in range(len(channels)):
-            await channels[i].send(f'{careCaca.getId()}')
-    else:
-        return
+            for i in range(len(channels)):
+                await channels[i].send(f'{careCaca.getId()}')
+        else:
+            return
 
 
 # adefecio
