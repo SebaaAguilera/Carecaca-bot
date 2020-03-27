@@ -301,7 +301,8 @@ async def endGame(ctx):
 
     ctr = gcDict.get(server_id)
     ctr.resetController()
-    dict.pop(ctr, None)
+
+    gcDict.pop(ctr, None)
 
 
 @bot.command(name="emoji", help="testing emoji messages")

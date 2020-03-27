@@ -37,7 +37,7 @@ class Card(object):
         return self.value <= card.getValue()
 
     def isValidWith(self, card):
-        if self.value in [2, 10, JK] or card is None:
+        if card is None or self.value in [2, 10, JK]:
             return True
         elif(card.getValue() == 7):
             return self.leq(card)
@@ -45,9 +45,7 @@ class Card(object):
             return self.geq(card)
 
     def returnEffect(self):
-        if (self.value == 2):
-            return None
-        elif(self.value == 8):
+        if(self.value == 8):
             return "skip"
         elif (self.value == 10):
             return "burn"

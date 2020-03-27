@@ -139,6 +139,7 @@ class GameController(object):
         if card is None:
             return False
         prevStatus = self.getStatus()
+        print(prevStatus)
         if(card.isValidWith(self.getCardOnTop())):
             if (self.flash and card.equalValue(self.cardOnTop)) or player.equalId(self.turnOwner):
                 self.turnOwner = player
@@ -156,7 +157,8 @@ class GameController(object):
             # wrong card, take all the stack
             self.getAllFromStack(player)
             self.endTurn(player)
-        return self.compareStatus(prevStatus)
+        print(self.getStatus())
+        return self.compareStatus(prevStatus) or
 
     # command !p (card number)
     def putCardFromHand(self, player, cardValue):
@@ -207,7 +209,10 @@ class GameController(object):
         if (effect == "skip"):
             self.endTurn(player, 1)
         elif (effect == "burn" or self.counter == 4):
+            print("hola")
+            print(self.cardOnTop)
             self.burn()
+            print(self.cardOnTop)
         elif (effect == "changeOrder"):
             self.changeOrder()
             self.endTurn(player)
