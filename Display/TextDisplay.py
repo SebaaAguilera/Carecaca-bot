@@ -115,7 +115,7 @@ class TextDisplay(object):
             for j in range(0, self.controller.getPlen()):
                 if (i != j and not players[j].hasNoCards()):  # have cards
                     dpls_per_player[i] += "\n **" + players[j].getId() + "'s cards: ** \n" + \
-                        self.cardsDisplay(players[j].getVisible(), True) \
+                        self.cardsDisplay(players[j].getVisible()) \
                         + self.cardsDisplay(players[j].getHidden(), False) \
                         + "\n"
             dpls_per_player[i] += tableStatus
@@ -125,7 +125,7 @@ class TextDisplay(object):
             else:
                 dpls_per_player[i] += "** Your Cards: **\n"
                 dpls_per_player[i] += "** Hand Cards: ** \n" + \
-                    self.cardsDisplay(players[i].getHand(), True)
+                    self.cardsDisplay(players[i].getHand())
                 dpls_per_player[i] += "** Table Cards: ** \n" + \
                     self.cardsDisplay(players[i].getVisible(), True) \
                     + self.cardsDisplay(players[i].getHidden(), False) + "\n\n"
