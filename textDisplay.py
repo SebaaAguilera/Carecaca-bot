@@ -71,6 +71,7 @@ class TextDisplay(object):
             return self.cardDisplay(card)
 
     # return a list with the display from the player 0 to the player len(players)-1
+    """
     def outPutTextDisplay(self):
         plInfo = self.getPlayersDisplay()
         turnOwner = self.controller.getTurnOwner().getId()
@@ -94,4 +95,38 @@ class TextDisplay(object):
             dpls_per_player[i] += "** Table Cards: ** \n" + \
                 plInfo[i][2] + plInfo[i][3] + "\n\n"
 
+        return dpls_per_player"""
+
+    def outPutTextDisplay(self):
+        players = self.controller.getPlayers()
+        turnOwner = self.controller.getTurnOwner().getId()
+        dpls_per_player = []
+        tableStatus = "** The turn owner is: __" + \
+            turnOwner + "__** \n\n" \
+            + "** Card on Top: **" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
+            "\n" \
+            + "** Cards in stack: " + \
+            str(len(self.controller.cardStack)) + "** \n" + \
+            "** Cards left :" + \
+            str(self.controller.deck.len()) + "/108 ** \n\n"
+        for i in range(0, self.controller.getPlen()):
+            dpls_per_player.append("\n")
+        for i in range(0, self.controller.getPlen()):
+            for j in range(0, self.controller.getPlen()):
+                if (i != j and not players[j].hasNoCards()):  # have cards
+                    dpls_per_player[i] += "\n **" + players[j].getId() + "'s cards: ** \n" + \
+                        self.cardsDisplay(players[j].getVisible(), True) \
+                        + self.cardsDisplay(players[j].getHidden(), False) \
+                        + "\n"
+            dpls_per_player[i] += tableStatus
+
+            if players[i].hasNoCards():
+                dpls_per_player[i] = "You are not a Care'caca"
+            else:
+                dpls_per_player[i] += "** Your Cards: **\n"
+                dpls_per_player[i] += "** Hand Cards: ** \n" + \
+                    self.cardsDisplay(players[i][1].getHand(), True)
+                dpls_per_player[i] += "** Table Cards: ** \n" + \
+                    self.cardsDisplay(players[i].getVisible(), True) \
+                    + self.cardsDisplay(players[i].getHidden(), False) + "\n\n"
         return dpls_per_player
