@@ -1,4 +1,4 @@
-from Card import *
+from .Card import *
 from random import shuffle
 
 
