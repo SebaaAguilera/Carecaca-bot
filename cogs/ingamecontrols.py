@@ -14,16 +14,16 @@ class InGameControls(commands.Cog):
         self.bot = bot
 
     async def msgStatus(self, ctx):
-      guild = ctx.guild
-      display = td.TextDisplay(self.bot.gcDict.get(guild.id))
-      categories = guild.categories
-      channels = []
-      message = display.outPutTextDisplay()
-      for category in categories:
-          if category.name == "Players":
-              channels = category.channels
-      for i in range(len(message)):
-          await channels[i].send(f'{message[i]}')
+        guild = ctx.guild
+        display = td.TextDisplay(self.bot.gcDict.get(guild.id))
+        categories = guild.categories
+        channels = []
+        message = display.outPutTextDisplay()
+        for category in categories:
+            if category.name == "Players":
+                channels = category.channels
+        for i in range(len(message)):
+            await channels[i].send(f'{message[i]}')
 
     async def requestCtr(self, ctx, functionCall):
         if (functionCall):  # aqui llegaria el putBlablabla
