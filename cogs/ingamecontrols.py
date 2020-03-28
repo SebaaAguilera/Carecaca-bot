@@ -54,7 +54,7 @@ class InGameControls(commands.Cog):
             player = ctr.getPlayerById(ctx.message.author.name)
             if (player.getId() == ctr.getTurnOwner().getId()):
                 ctr.endTurn(player)
-                await msgStatus(ctx)
+                await self.msgStatus(ctx)
             ctr.leaveGame(player)
         else:
             await ctx.send(

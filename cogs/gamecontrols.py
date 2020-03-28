@@ -146,7 +146,7 @@ class GameControls(commands.Cog):
                 if args[0] == "True":
                     ctr.setFlash(True)
                 elif args[0] == "False":
-                    ctr.setFlash(True)
+                    ctr.setFlash(False)
                 else:
                     e = discord.Embed(
                         title=':x: Invalid argument, if you wanna play with Flash use ``!start-game True``', colour=discord.Colour(0xff3232))
