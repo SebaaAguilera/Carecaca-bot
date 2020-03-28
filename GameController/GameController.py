@@ -228,7 +228,7 @@ class GameController(object):
     def returnCareCaca(self):
         playersLeft = []
         for player in self.players:
-            if player.hasNoCards():
+            if not player.hasNoCards():
                 playersLeft.append(player)
         if len(playersLeft) == 1:
             return playersLeft[0]
