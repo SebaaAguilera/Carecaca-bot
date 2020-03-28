@@ -3,10 +3,10 @@ from discord.ext import commands
 import discord
 
 # Custom
-import card
-import player
-import gameController as gc
-import textDisplay as td
+import Models.Card as card
+import Models.Player as player
+import GameController.GameController as gc
+import Display.TextDisplay as td
 
 
 class General(commands.Cog):
@@ -17,7 +17,6 @@ class General(commands.Cog):
     async def hi(self, ctx):
         await ctx.send(f'Hi {ctx.message.author.name}, nice to meet you! :heart:')
 
-
     @commands.command(name="get-players", help="Print currently players (???")
     async def get_players(self, ctx):
         ctr = self.bot.gcDict.get(ctx.message.author.guild.id)
@@ -27,7 +26,7 @@ class General(commands.Cog):
             string += player.getId() + "\n"
         e = discord.Embed(title=f'{string}')
         await ctx.send(f"Jugadores conectados: \n", embed=e)
-        
+
 
 def setup(bot):
     bot.add_cog(General(bot))

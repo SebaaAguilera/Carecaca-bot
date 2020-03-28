@@ -2,10 +2,10 @@ from discord.ext import commands
 import discord
 
 # Custom
-import card
-import player
-import gameController as gc
-import textDisplay as td
+import Models.Card as card
+import Models.Player as player
+import GameController.GameController as gc
+import Display.TextDisplay as td
 
 
 class InGameControls(commands.Cog):
@@ -44,7 +44,7 @@ class InGameControls(commands.Cog):
             return 30
         else:
             return int(arg)
-            
+
     @commands.command(name="l", help="You'll leave the game", aliases=['leave'])
     async def l(self, ctx):
         # if gameController.playing:
@@ -74,7 +74,6 @@ class InGameControls(commands.Cog):
             await ctx.send(
                 ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
-
     @commands.command(name="t", help="Put a card from your table cards like '!t J'", aliases=['table'])
     async def t(self, ctx, *, args):
         # if ctr.playing:
@@ -86,7 +85,6 @@ class InGameControls(commands.Cog):
         else:
             await ctx.send(
                 ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
-
 
     @commands.command(name="h", help="Put a card from your hidden cards like '!h 2'", aliases=['hidden'])
     async def h(self, ctx, *, args):
@@ -113,7 +111,6 @@ class InGameControls(commands.Cog):
         else:
             await ctx.send(
                 ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
-
 
     @commands.command(name="c", help="Who is the last CareCaca? (not working yet)", aliases=['carecaca'])
     async def carecaca(self, ctx):

@@ -1,7 +1,7 @@
 
-from card import *
-from player import *
-from deck import *
+from Models.Card import *
+from Models.Player import *
+from Models.Deck import *
 
 
 class GameController(object):

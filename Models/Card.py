@@ -1,5 +1,3 @@
-from random import shuffle
-
 A = 20
 J = 11
 Q = 12

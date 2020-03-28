@@ -2,7 +2,7 @@
 
 [Bot page and description! ](https://top.gg/bot/690935965082189845)
 [Bot invitation link! ](https://discordapp.com/oauth2/authorize?client_id=690935965082189845&scope=bot&permissions=8])
-Bot prefix: !
+Bot commands prefix: !
 
 ## Bot itself:
 

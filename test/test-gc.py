@@ -1,7 +1,7 @@
-from gameController import *
-from player import *
-from card import *
-from deck import *
+from GameController.GameController import *
+from Models.Player import *
+from Models.Card import *
+from Models.Deck import *
 
 A = 20
 J = 11

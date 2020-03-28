@@ -1,3 +1,4 @@
+import GameController.GameController as gc
 A = 20
 J = 11
 Q = 12

@@ -1,4 +1,4 @@
-from card import *
+from Card import *
 
 
 class Player(object):

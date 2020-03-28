@@ -15,10 +15,10 @@ from discord.ext import commands
 
 
 # Custom
-import card
-import player
-import gameController as gc
-import textDisplay as td
+import Models.Card
+import Models.Player
+import GameController.GameController as gc
+import Display.TextDisplay as td
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -59,6 +59,7 @@ bot.gcDict = {}
 
 # Keviinplz ID
 
+
 @bot.event
 async def on_member_join(member):
     await member.create_dm()
@@ -79,8 +80,6 @@ async def on_ready():
     )
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
-
-
 
 
 # =============================================================================================
