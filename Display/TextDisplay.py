@@ -1,4 +1,3 @@
-import GameController.GameController as gc
 A = 20
 J = 11
 Q = 12
@@ -126,7 +125,7 @@ class TextDisplay(object):
             else:
                 dpls_per_player[i] += "** Your Cards: **\n"
                 dpls_per_player[i] += "** Hand Cards: ** \n" + \
-                    self.cardsDisplay(players[i][1].getHand(), True)
+                    self.cardsDisplay(players[i].getHand(), True)
                 dpls_per_player[i] += "** Table Cards: ** \n" + \
                     self.cardsDisplay(players[i].getVisible(), True) \
                     + self.cardsDisplay(players[i].getHidden(), False) + "\n\n"

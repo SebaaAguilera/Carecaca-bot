@@ -19,7 +19,7 @@ import GameController.GameController as gc
 import Display.TextDisplay as td
 
 load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
+TEST_TOKEN = os.getenv('DISCORD_TEST_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 Keviinplz = int(os.getenv('KEVIN_ID'))
@@ -81,4 +81,4 @@ async def on_ready():
     print(f'Guild Members:\n - {members}')
 
 
-bot.run(TOKEN)
+bot.run(TEST_TOKEN)

@@ -51,6 +51,9 @@ class InGameControls(commands.Cog):
         authorId = ctx.message.author.guild.id
         ctr = self.bot.gcDict.get(authorId)
         if ctr is not None:
+            if len(ctr.getPlayers()) == 1:
+                await ctx.send(":x: Are u playing alone?, please use !end-game to end your lonely game dude")
+                return
             player = ctr.getPlayerById(ctx.message.author.name)
             if (player.getId() == ctr.getTurnOwner().getId()):
                 ctr.endTurn(player)
@@ -58,7 +61,7 @@ class InGameControls(commands.Cog):
             ctr.leaveGame(player)
         else:
             await ctx.send(
-                ":x: Nobody is playing now. You can't leave a game now")
+                ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
 
     # !y <cardNumber>
     #
