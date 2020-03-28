@@ -127,6 +127,6 @@ class TextDisplay(object):
                 dpls_per_player[i] += "** Hand Cards: ** \n" + \
                     self.cardsDisplay(players[i].getHand())
                 dpls_per_player[i] += "** Table Cards: ** \n" + \
-                    self.cardsDisplay(players[i].getVisible(), True) \
+                    self.cardsDisplay(players[i].getVisible()) \
                     + self.cardsDisplay(players[i].getHidden(), False) + "\n\n"
         return dpls_per_player

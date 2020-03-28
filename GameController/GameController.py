@@ -144,7 +144,7 @@ class GameController(object):
             return False
         prevStatus = self.getStatus()
         if(card.isValidWith(self.getCardOnTop())):
-            if (self.flash and card.equalValue(self.cardOnTop)) or player.equalId(self.turnOwner):
+            if (self.flash and (self.cardOnTop is None or card.equalValue(self.cardOnTop))) or player.equalId(self.turnOwner):
                 self.turnOwner = player
                 if hand:
                     self.setCardOnTop(
