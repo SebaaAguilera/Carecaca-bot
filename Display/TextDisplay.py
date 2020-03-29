@@ -84,8 +84,23 @@ class TextDisplay(object):
             else:
                 dpls_per_player[i] += "** Your Cards: **\n"
                 dpls_per_player[i] += "** Hand Cards: ** \n" + \
-                    self.cardsDisplay(players[i].getHand())
+                    self.cardsDisplay(self.sortCards(players[i].getHand()))
                 dpls_per_player[i] += "** Table Cards: ** \n" + \
                     self.cardsDisplay(players[i].getVisible()) \
                     + self.cardsDisplay(players[i].getHidden(), False) + "\n\n"
         return dpls_per_player
+    
+    #brute-force :c
+    def sortCards(self,cards):
+        sortedCards = []
+        for i in range(1,15):
+            for card in cards:
+                if i==1 and card.getValue()==A:
+                    sortedCards+=card
+                elif i==14 and card.getValue()==JK:
+                    sortedCard+=card
+                elif i==card.getValue():
+                    sortedCard+=card
+        return sortedCards
+            
+        
