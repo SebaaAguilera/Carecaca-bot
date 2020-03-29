@@ -197,7 +197,7 @@ class GameController(object):
     def returnPlayer_Order(self, player):
         player = self.players[(self.indexP(player)+self.returnOrder() % self.getPlen()]
         while(auxPlayer.hasNoCards()):
-            player = sself.players[(self.indexP(player)+self.returnOrder() % self.getPlen()]
+            player = self.players[(self.indexP(player)+self.returnOrder() % self.getPlen()]
         return player
 
     def endTurn(self, player, skip=0):
