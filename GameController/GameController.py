@@ -162,7 +162,7 @@ class GameController(object):
             self.endTurn(player)
         return self.compareStatus(prevStatus)
 
-    # command !p (card number)
+    # command !y (card number)
     def putCardFromHand(self, player, cardValue):
         return self.putCardAbstract(player, player.getHandCardByValue(cardValue))
 
@@ -194,14 +194,16 @@ class GameController(object):
             self.getAllFromStack(player)
             self.endTurn(player)
 
-    def returnPlayer_Order(self, player, skip=0):
-        return self.players[(self.indexP(player)+self.returnOrder()*(1+skip)) % self.getPlen()]
+    def returnPlayer_Order(self, player):
+        player = self.players[(self.indexP(player)+self.returnOrder() % self.getPlen()]
+        while(auxPlayer.hasNoCards()):
+            player = sself.players[(self.indexP(player)+self.returnOrder() % self.getPlen()]
+        return player
 
     def endTurn(self, player, skip=0):
-        auxPlayer = self.returnPlayer_Order(player, skip)
-        while(auxPlayer.hasNoCards()):
-            auxPlayer = self.returnPlayer_Order(auxPlayer)
-        self.turnOwner = auxPlayer
+        for i in range(0,skip):
+            player = self.returnPlayer_Order(player)
+        self.turnOwner = player
 
     def endTurnEffects(self, player):
         if self.cardOnTop is None:
