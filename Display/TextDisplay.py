@@ -9,21 +9,6 @@ class TextDisplay(object):
     def __init__(self, controller):
         self.controller = controller
 
-    def getPlayersDisplay(self):
-        numOfPlayers = self.controller.getPlen()
-        players = self.controller.getPlayers()
-        playerInfo = []
-        for i in range(0, numOfPlayers):
-            player = players[i]
-            playerInfo.append(
-                [player.getId(),
-                 self.cardsDisplay(player.getHand()),
-                 self.cardsDisplay(player.getVisible()),
-                 self.cardsDisplay(player.getHidden(), False)
-                 ]
-            )
-        return playerInfo
-
     def cardsDisplay(self, cards, show=True):
         nc = ""
         for i in range(0, len(cards)):
@@ -71,32 +56,6 @@ class TextDisplay(object):
             return self.cardDisplay(card)
 
     # return a list with the display from the player 0 to the player len(players)-1
-    """
-    def outPutTextDisplay(self):
-        plInfo = self.getPlayersDisplay()
-        turnOwner = self.controller.getTurnOwner().getId()
-        dpls_per_player = []
-        for i in range(0, self.controller.getPlen()):
-            dpls_per_player.append("\n")
-        for i in range(0, self.controller.getPlen()):
-            for j in range(0, self.controller.getPlen()):
-                if (i != j):
-                    dpls_per_player[i] += "\n **" + plInfo[j][0] + "'s cards: ** \n" + \
-                        plInfo[j][2] + plInfo[j][3] + "\n"
-            dpls_per_player[i] += "** The turn owner is: __" + \
-                turnOwner + "__** \n\n"
-            dpls_per_player[i] += "** Card on Top: **" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
-                "\n"
-            dpls_per_player[i] += "** Cards in stack: " + \
-                str(len(self.controller.cardStack)) + "** \n" + \
-            "** Cards left :" + str(self.controller.deck.len()) + "/108 ** \n\n"
-            dpls_per_player[i] += "** Your Cards: **\n"
-            dpls_per_player[i] += "** Hand Cards: ** \n" + plInfo[i][1]
-            dpls_per_player[i] += "** Table Cards: ** \n" + \
-                plInfo[i][2] + plInfo[i][3] + "\n\n"
-
-        return dpls_per_player"""
-
     def outPutTextDisplay(self):
         players = self.controller.getPlayers()
         turnOwner = self.controller.getTurnOwner().getId()
@@ -121,7 +80,7 @@ class TextDisplay(object):
             dpls_per_player[i] += tableStatus
 
             if players[i].hasNoCards():
-                dpls_per_player[i] = "You are not a Care'caca"
+                dpls_per_player[i] += "You are not a Care'caca"
             else:
                 dpls_per_player[i] += "** Your Cards: **\n"
                 dpls_per_player[i] += "** Hand Cards: ** \n" + \
