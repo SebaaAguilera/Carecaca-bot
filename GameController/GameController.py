@@ -211,12 +211,18 @@ class GameController(object):
             return
         effect = self.getCardOnTop().returnEffect()
         if (effect == "skip"):
-            self.endTurn(player, 1)
+            if(self.counter == 4):
+                self.burn()
+            else:
+                self.endTurn(player, 1)
         elif (effect == "burn" or self.counter == 4):
             self.burn()
         elif (effect == "changeOrder"):
             self.changeOrder()
-            self.endTurn(player)
+            if(self.counter == 4):
+                self.burn()
+            else:
+                self.endTurn(player)
         elif (effect == "takeAll"):
             self.cardStack.pop()
             auxPlayer = self.returnPlayer_Order(player)
