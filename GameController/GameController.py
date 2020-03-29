@@ -195,13 +195,13 @@ class GameController(object):
             self.endTurn(player)
 
     def returnPlayer_Order(self, player):
-        player = self.players[(self.indexP(player)+self.returnOrder() % self.getPlen()]
-        while(auxPlayer.hasNoCards()):
-            player = self.players[(self.indexP(player)+self.returnOrder() % self.getPlen()]
+        player = self.players[(self.indexP(player)+self.returnOrder()) % self.getPlen()]
+        while(player.hasNoCards()):
+            player = self.players[(self.indexP(player)+self.returnOrder()) % self.getPlen()]
         return player
 
     def endTurn(self, player, skip=0):
-        for i in range(0,skip):
+        for i in range(0,skip + 1):
             player = self.returnPlayer_Order(player)
         self.turnOwner = player
 

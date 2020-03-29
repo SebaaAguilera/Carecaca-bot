@@ -54,12 +54,26 @@ class TextDisplay(object):
             return " "
         else:
             return self.cardDisplay(card)
+    
+    #brute-force :c
+    def sortCards(self,cards):
+        sortedCards = []
+        for i in range(1,15):
+            for card in cards:
+                if i==1 and card.getValue()==A:
+                    sortedCards.append(card)
+                elif i==14 and card.getValue()==JK:
+                    sortedCards.append(card)
+                elif i==card.getValue():
+                    sortedCards.append(card)
+        return sortedCards
 
     # return a list with the display from the player 0 to the player len(players)-1
     def outPutTextDisplay(self):
         players = self.controller.getPlayers()
         turnOwner = self.controller.getTurnOwner().getId()
         dpls_per_player = []
+        CareCaca = self.controller.returnCareCaca()
         tableStatus = "** The turn owner is: __" + \
             turnOwner + "__** \n\n" \
             + "** Card on Top: **" + self.auxCardOnTop(self.controller.getCardOnTop()) + \
@@ -81,6 +95,9 @@ class TextDisplay(object):
 
             if players[i].hasNoCards():
                 dpls_per_player[i] += "You are not a Care'caca"
+            elif CareCaca is not None and CareCaca.equalId(players[i]):
+                dpls_per_player[i] = ":poop: You are the Care'caca, please put **!end-game** to close this game."
+                dpls_per_player[i] += ":poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop: :poop:"
             else:
                 dpls_per_player[i] += "** Your Cards: **\n"
                 dpls_per_player[i] += "** Hand Cards: ** \n" + \
@@ -88,19 +105,9 @@ class TextDisplay(object):
                 dpls_per_player[i] += "** Table Cards: ** \n" + \
                     self.cardsDisplay(players[i].getVisible()) \
                     + self.cardsDisplay(players[i].getHidden(), False) + "\n\n"
+
         return dpls_per_player
     
-    #brute-force :c
-    def sortCards(self,cards):
-        sortedCards = []
-        for i in range(1,15):
-            for card in cards:
-                if i==1 and card.getValue()==A:
-                    sortedCards+=card
-                elif i==14 and card.getValue()==JK:
-                    sortedCard+=card
-                elif i==card.getValue():
-                    sortedCard+=card
-        return sortedCards
+    
             
         

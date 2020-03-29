@@ -122,7 +122,12 @@ class GameControls(commands.Cog):
             if category.name == "Players":
                 channels = category.channels
         for i in range(len(message)):
-            await channels[i].send(f'{message[i]}')
+            msg_embed = discord.Embed(
+                title="**Game Status:**",
+                type="rich",
+                description=f"{message[i]}",
+                colour=discord.Colour(0x09c48c))
+            await channels[i].send(content='', embed=msg_embed, delete_after=300)
 
     @commands.command(name="start-game", help="Start a CareCaca game")
     async def startGame(self, ctx, *args):
@@ -220,7 +225,7 @@ class GameControls(commands.Cog):
         # Deleting category 'Players'
         await category.delete(reason="End game")
 
-        await ctx.send('Room has been deleted')
+        
 
 
 def setup(bot):

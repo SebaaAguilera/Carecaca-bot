@@ -23,7 +23,12 @@ class InGameControls(commands.Cog):
             if category.name == "Players":
                 channels = category.channels
         for i in range(len(message)):
-            await channels[i].send(f'{message[i]}')
+            msg_embed = discord.Embed(
+                title="**Game Status:**",
+                type="rich",
+                description=f"{message[i]}",
+                colour=discord.Colour(0x09c48c))
+            await channels[i].send(content='', embed=msg_embed, delete_after=300)
 
     async def requestCtr(self, ctx, functionCall):
         if (functionCall):  # aqui llegaria el putBlablabla
@@ -55,10 +60,12 @@ class InGameControls(commands.Cog):
                 await ctx.send(":x: Are u playing alone?, please use !end-game to end your lonely game dude")
                 return
             player = ctr.getPlayerById(ctx.message.author.name)
-            if (player.getId() == ctr.getTurnOwner().getId()):
-                ctr.endTurn(player)
-                await self.msgStatus(ctx)
             ctr.leaveGame(player)
+            if (player.getId() == ctr.getTurnOwner().getId()):
+                ctr.endTurn(player)         
+                await self.msgStatus(ctx)
+            elif(ctr.returnCareCaca() is not None):
+                await self.msgStatus(ctx)
         else:
             await ctx.send(
                 ":x: Nobody is playing now. If you want to start a game, use ``!start-game``")
