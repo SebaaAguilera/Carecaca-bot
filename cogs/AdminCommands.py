@@ -37,7 +37,7 @@ class AdminCommands(commands.Cog):
         if isinstance(error, commands.CheckFailure):
             await ctx.send(':x: **Sorry bro, you are not aloud to do that**')
 
-    @commands.command(name="server-list", help="Obtain servers id's in the case an user needs assitance")
+    """@commands.command(name="server-list", help="Obtain servers id's in the case an user needs assitance")
     async def serverList(self, ctx):  # no se que pasa acaaaaaaaaaaaaaaaaa
         servList = "**Server name: id: hasGC** \n"
         for guild in self.bot.guilds:
@@ -45,10 +45,31 @@ class AdminCommands(commands.Cog):
                 hasGameController(self, guild.id) + "\n"
         servList += "len: " + len(self.bot.guilds)
         print(f'{servList}')
-        await ctx.send(f'{servList}')
+        await ctx.send(f'{servList}')"""
+    
+    @commands.command(pass_context=True)
+    async def serverlist(self, ctx):
+        data_server_str = ""
+        gcDict = self.bot.gcDict
+        servers = self.bot.guilds
+        for server in servers:
+            data_server_str = f"**Name Server:** {server.name} | **ID Server:** {server.id} \n"
+            gc = gcDict.get(server.id)
+            if gc is not None:
+                data_server_str += '**This server has a Game Controller Active** \n \n'
+            else:
+                data_server_str += '**This server has not a Game Controller Active** \n \n'
+        msg_embed = discord.Embed(
+                title="**Server List:**",
+                type="rich",
+                description=data_server_str,
+                colour=discord.Colour(0x09c48c))
+        msg_embed.set_author(name="Carecaca Bot", icon_url="https://cdn.fashionmagazine.com/wp-content/uploads/2016/02/Poop-101-480x0-c-default.jpg") # hay que encontrar una imagen en jgp bonita para el mensaje uwu
+        await ctx.send(content='', embed=msg_embed)
+            
 
-    @serverList.error
-    async def serverList_error(self, ctx, error):
+    @serverlist.error
+    async def serverlist_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             await ctx.send(':x: **Sorry bro, you are not aloud to do that**')
 
@@ -59,14 +80,14 @@ class AdminCommands(commands.Cog):
         if self.bot.gcDict.get(int(args)) is None:
             await ctx.send("Game succesfully deleted")
 
-    @serverList.error
+    @delete_gc.error
     async def delete_gc_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             await ctx.send(':x: **Sorry bro, you are not aloud to do that**')
 
 
-def hasGameController(bot, id):
-    return bot.get(id) is not None
+    def hasGameController(self, bot, id):
+        return self.bot.get(id) is not None
 
 
 def setup(bot):
