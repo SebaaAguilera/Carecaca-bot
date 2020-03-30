@@ -53,21 +53,13 @@ class AdminCommands(commands.Cog):
         gcDict = self.bot.gcDict
         servers = self.bot.guilds
         for server in servers:
-            print(data_server_str)
             data_server_str += f"**Name Server:** {server.name} | **ID Server:** {server.id} \n"
             gc = gcDict.get(server.id)
-            print(data_server_str)
             if gc is not None:
                 data_server_str += '**This server has a Game Controller Active** \n \n'
             else:
                 data_server_str += '**This server has not a Game Controller Active** \n \n'
-        msg_embed = discord.Embed(
-                title="**Server List:**",
-                type="rich",
-                description=data_server_str,
-                colour=discord.Colour(0x09c48c))
-        msg_embed.set_author(name="Carecaca Bot", icon_url="https://cdn.fashionmagazine.com/wp-content/uploads/2016/02/Poop-101-480x0-c-default.jpg") # hay que encontrar una imagen en jgp bonita para el mensaje uwu
-        await ctx.send(content='', embed=msg_embed)
+        await ctx.send(content=f'{data_server_str}')
             
 
     @serverlist.error
