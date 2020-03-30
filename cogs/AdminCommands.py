@@ -59,7 +59,8 @@ class AdminCommands(commands.Cog):
                 data_server_str += '**This server has a Game Controller Active** \n \n'
             else:
                 data_server_str += '**This server has not a Game Controller Active** \n \n'
-        await ctx.send(content=f'{data_server_str}')
+        admin = await ctx.message.author.create_dm()
+        await admin.send(content=f'{data_server_str}')
             
 
     @serverlist.error
