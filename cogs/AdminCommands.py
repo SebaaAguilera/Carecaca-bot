@@ -53,8 +53,10 @@ class AdminCommands(commands.Cog):
         gcDict = self.bot.gcDict
         servers = self.bot.guilds
         for server in servers:
+            print(data_server_str)
             data_server_str += f"**Name Server:** {server.name} | **ID Server:** {server.id} \n"
             gc = gcDict.get(server.id)
+            print(data_server_str)
             if gc is not None:
                 data_server_str += '**This server has a Game Controller Active** \n \n'
             else:
