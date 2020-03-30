@@ -40,10 +40,10 @@ class AdminCommands(commands.Cog):
     @commands.command(name="server-list", help="Obtain servers id's in the case an user needs assitance")
     async def serverList(self, ctx):  # no se que pasa acaaaaaaaaaaaaaaaaa
         servList = "**Server name: id: hasGC** \n"
-        for guild in self.guilds:
+        for guild in self.bot.guilds:
             servlist += guild.name + ": " + guild.id + ": " + \
                 hasGameController(self, guild.id) + "\n"
-        servList += "len: " + len(self.guilds)
+        servList += "len: " + len(self.bot.guilds)
         print(f'{servList}')
         await ctx.send(f'{servList}')
 
@@ -55,7 +55,8 @@ class AdminCommands(commands.Cog):
     @commands.command(name="delete-gc", help="Delete a game using a server id")
     async def delete_gc(self, ctx, *, args):
         # esto se iene que haer de otra forma pero no se como
-        if self.gcDict.pop(int(args), None) is not None:
+        del self.bot.gcDict[int(args)]
+        if self.bot.gcDict.get(int(args)) is not None:
             await ctx.send("Game succesfully deleted")
 
     @serverList.error
