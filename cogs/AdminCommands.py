@@ -4,7 +4,6 @@ from discord.ext.commands import CheckFailure, Cog
 import discord
 
 
-
 class AdminCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -37,6 +36,37 @@ class AdminCommands(commands.Cog):
     async def clear_error(self, ctx, error):
         if isinstance(error, commands.CheckFailure):
             await ctx.send(':x: **Sorry bro, you are not aloud to do that**')
+
+    @commands.command(name="server-list", help="Obtain servers id's in the case an user needs assitance")
+    async def serverList(self, ctx):  # no se que pasa acaaaaaaaaaaaaaaaaa
+        servList = "**Server name: id: hasGC** \n"
+        for guild in self.guilds:
+            servlist += guild.name + ": " + guild.id + ": " + \
+                hasGameController(self, guild.id) + "\n"
+        servList += "len: " + len(self.guilds)
+        print(f'{servList}')
+        await ctx.send(f'{servList}')
+
+    @serverList.error
+    async def serverList_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
+            await ctx.send(':x: **Sorry bro, you are not aloud to do that**')
+
+    @commands.command(name="delete-gc", help="Delete a game using a server id")
+    async def delete_gc(self, ctx, *, args):
+        # esto se iene que haer de otra forma pero no se como
+        if self.gcDict.pop(int(args), None) is not None:
+            await ctx.send("Game succesfully deleted")
+
+    @serverList.error
+    async def delete_gc_error(self, ctx, error):
+        if isinstance(error, commands.CheckFailure):
+            await ctx.send(':x: **Sorry bro, you are not aloud to do that**')
+
+
+def hasGameController(bot, id):
+    return bot.get(id) is not None
+
 
 def setup(bot):
     bot.add_cog(AdminCommands(bot))

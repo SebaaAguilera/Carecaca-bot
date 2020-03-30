@@ -26,7 +26,6 @@ Keviinplz = int(os.getenv('KEVIN_ID'))
 Sebakun = int(os.getenv('SEBA_ID'))
 
 
-
 client = discord.Client()
 bot = commands.Bot(command_prefix='!')
 
@@ -55,7 +54,7 @@ logger.addHandler(handler)
 
 ##gameController = gc.GameController()
 bot.gcDict = {}
-bot.ADMIN_LIST = [Keviinplz, Sebakun]
+bot.ADMIN_LIST = [Keviinplz, Sebakun]  # ME ESTAY HUEVEANDO?
 # Keviinplz ID
 
 

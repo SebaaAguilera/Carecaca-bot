@@ -185,7 +185,6 @@ class GameControls(commands.Cog):
                               colour=discord.Colour(0x09c48c))
             await ctx.send('', embed=e)
 
-            # gameController.initGame()
             ctr.initGame()
             await self.msgStatus(ctx)
         else:
@@ -224,8 +223,6 @@ class GameControls(commands.Cog):
 
         # Deleting category 'Players'
         await category.delete(reason="End game")
-
-        
 
 
 def setup(bot):
