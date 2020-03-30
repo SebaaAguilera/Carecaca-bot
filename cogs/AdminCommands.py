@@ -48,19 +48,20 @@ class AdminCommands(commands.Cog):
         await ctx.send(f'{servList}')"""
     
     @commands.command(pass_context=True)
-    async def serverlist(self, ctx):
-        data_server_str = ""
+    async def serverlist(self, ctx):       
         gcDict = self.bot.gcDict
         servers = self.bot.guilds
         for server in servers:
+            data_server_str = ""
             data_server_str += f"**Name Server:** {server.name} | **ID Server:** {server.id} \n"
             gc = gcDict.get(server.id)
             if gc is not None:
                 data_server_str += '**This server has a Game Controller Active** \n \n'
             else:
                 data_server_str += '**This server has not a Game Controller Active** \n \n'
-        admin = await ctx.message.author.create_dm()
-        await admin.send(content=f'{data_server_str}')
+            admin = await ctx.message.author.create_dm()
+            await admin.send(content=f'{data_server_str}')
+        
             
 
     @serverlist.error
