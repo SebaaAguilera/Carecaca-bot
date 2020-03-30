@@ -56,7 +56,7 @@ class AdminCommands(commands.Cog):
     async def delete_gc(self, ctx, *, args):
         # esto se iene que haer de otra forma pero no se como
         del self.bot.gcDict[int(args)]
-        if self.bot.gcDict.get(int(args)) is not None:
+        if self.bot.gcDict.get(int(args)) is None:
             await ctx.send("Game succesfully deleted")
 
     @serverList.error
