@@ -33,7 +33,7 @@ bot.load_extension("cogs.General")
 bot.load_extension("cogs.GameControls")
 bot.load_extension("cogs.InGameControls")
 bot.load_extension("cogs.AdminCommands")
-
+uwu="uwu"
 
 # =============================================================================================
 # ====================================== Log Status ===========================================
